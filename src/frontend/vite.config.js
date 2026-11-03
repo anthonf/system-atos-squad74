@@ -3,12 +3,15 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  css: {
+    postcss: {
+      plugins: [],
+    },
+  },
   server: {
     port: 5173,
     proxy: {
-      // Dev: /api -> backend .NET em http://localhost:5177
       '/api': { target: 'http://localhost:5177', changeOrigin: true },
     },
   },
-  preview: { port: 5173 },
 });
