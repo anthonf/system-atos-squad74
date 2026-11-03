@@ -1,0 +1,27 @@
+services:
+  supportatos-db:
+    image: postgres:17
+    networks:
+      - supportatos-network
+    container_name: supportatos-db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-supportatos}
+      - POSTGRES_DB=supportatos
+    ports:
+      - 5433:5432
+    volumes:
+      - ./scripts:/docker-entrypoint-initdb.d
+      - supportatos-db-data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  supportatos-db-data:
+    name: supportatos-db-data
+
+# Rede interna (não externa): o compose raiz usa rede padrão.
+# Mantido aqui só por compatibilidade — prefira o docker-compose.yml da raiz.
+# Fonte oficial do schema: EF Core Migrations (src/SupportAtos.Infrastructure/Migrations).
+networks:
+  supportatos-network:
+    driver: bridge

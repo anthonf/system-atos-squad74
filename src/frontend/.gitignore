@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+*.local
+# Artefatos gerados pelo `tsc -b` (tsconfig com composite:true emite JS/.d.ts/.tsbuildinfo a partir do vite.config.ts — regenerados a cada build, nunca versionar)
+vite.config.js
+vite.config.d.ts
+*.tsbuildinfo
+# Cache/logs
+.vite/
+*.log
+coverage/

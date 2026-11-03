@@ -1,0 +1,51 @@
+# ===== Visual Studio / Rider / IDEs =====
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ===== Compilação / build =====
+bin/
+obj/
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.so
+*.dylib
+
+# ===== Testes =====
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# ===== Overrides locais de configuração =====
+*.local.json
+.env
+.env.*
+
+# ===== # SupportAtos.TokenMinter: chaves de desenvolvimento =====
+# A chave PRIVADA nunca deve ser versionada. A chave pública de dev fica em
+# appsettings.Development.json (Sso:PublicKeyPem), que não é um segredo.
+tools/SupportAtos.TokenMinter/keys/
+**/keys/*private*.pem
+**/keys/private*.pem
+
+# ===== Logs =====
+*.log
+logs/
+
+# ===== NuGet =====
+*.nupkg
+
+# ===== Sistema operacional =====
+Thumbs.db
+.DS_Store
+Desktop.ini

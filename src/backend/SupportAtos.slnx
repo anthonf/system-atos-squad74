@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SupportAtos.Api/SupportAtos.Api.csproj" />
+    <Project Path="src/SupportAtos.Application/SupportAtos.Application.csproj" />
+    <Project Path="src/SupportAtos.Domain/SupportAtos.Domain.csproj" />
+    <Project Path="src/SupportAtos.Infrastructure/SupportAtos.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SupportAtos.Application.Tests/SupportAtos.Application.Tests.csproj" />
+    <Project Path="tests/SupportAtos.Integration.Tests/SupportAtos.Integration.Tests.csproj" />
+  </Folder>
+</Solution>

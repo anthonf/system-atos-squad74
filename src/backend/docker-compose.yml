@@ -1,0 +1,21 @@
+services:
+  supportatos-db:
+    image: postgres:17
+    container_name: supportatos-db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-supportatos}
+      - POSTGRES_DB=supportatos
+    ports:
+      - "5433:5432"
+    volumes:
+      - supportatos-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d supportatos"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  supportatos-db-data:

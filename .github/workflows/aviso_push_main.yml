@@ -1,0 +1,40 @@
+name: Aviso de Push Direto na main
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  detectar-push-direto:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar se os commits vieram de PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sleep 5
+          diretos=""
+          for sha in $(jq -r '.commits[].id' "$GITHUB_EVENT_PATH"); do
+            AUTOR=$(gh api "repos/${{ github.repository }}/commits/$sha" --jq '.author.login' 2>/dev/null || echo "desconhecido")
+            if [ "$AUTOR" = "FluixIT" ]; then
+              continue
+            fi
+            N=$(gh api "repos/${{ github.repository }}/commits/$sha/pulls" --jq 'length' 2>/dev/null || echo 0)
+            if [ "$N" -eq 0 ]; then
+              MSG=$(gh api "repos/${{ github.repository }}/commits/$sha" --jq '.commit.message | split("\n")[0]' 2>/dev/null || echo "?")
+              diretos="${diretos}- **${AUTOR}** — ${MSG} (${sha:0:7})\n"
+            fi
+          done
+          if [ -n "$diretos" ]; then
+            printf '### :warning: Push direto detectado na main\n\nCommits sem PR associado. Regra do projeto: desenvolver em branch `feature/RFxx-descricao` e trazer via Pull Request.\n\n%b' "$diretos" > body.md
+            gh issue create --repo "${{ github.repository }}" --title "Push direto na main" --body-file body.md
+            echo "::error::Push direto detectado — ver a issue criada."
+          else
+            echo "OK: todos os commits deste push vieram de PRs (merge)."
+          fi
