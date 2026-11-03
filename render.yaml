@@ -22,18 +22,3 @@ services:
         sync: false
       - key: Frontend__Origins
         sync: false
-
-  - type: web
-    name: system-atos-squad74-frontend
-    runtime: static
-    plan: free
-    rootDir: src/frontend
-    buildCommand: npm ci && npm run build
-    staticPublishPath: ./dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    envVars:
-      - key: VITE_API_URL
-        sync: false
