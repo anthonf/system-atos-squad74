@@ -1,3 +1,10 @@
+databases:
+  - name: supportatos-db
+    databaseName: supportatos
+    user: admin
+    plan: free
+    postgresMajorVersion: 16
+
 services:
   - type: web
     name: system-atos-api
@@ -21,4 +28,6 @@ services:
       - key: Frontend__Origins
         value: https://inquisitive-torte-0fd4c0.netlify.app
       - key: ConnectionStrings__DefaultConnection
-        sync: false
+        fromDatabase:
+          name: supportatos-db
+          property: connectionString
