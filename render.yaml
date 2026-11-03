@@ -26,7 +26,7 @@ services:
       - key: Sso__ApiKey
         value: atos-demo-api-key-2026-secret
       - key: Frontend__Origins
-        value: https://inquisitive-torte-0fd4c0.netlify.app
+        value: https://cerulean-syrniki-02dc26.netlify.app
       - key: ConnectionStrings__DefaultConnection
         fromDatabase:
           name: supportatos-db

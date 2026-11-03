@@ -2,7 +2,7 @@
 
 Plataforma de suporte técnico da **Atos Capital** para abertura, acompanhamento e resolução de chamados, com painel interno de atendimento, ciclo de vida completo, SLA e autenticação via SSO/JWT.
 
-**Frontend em produção:** https://inquisitive-torte-0fd4c0.netlify.app/
+**Frontend em produção:** https://cerulean-syrniki-02dc26.netlify.app/
 
 ---
 
@@ -10,7 +10,7 @@ Plataforma de suporte técnico da **Atos Capital** para abertura, acompanhamento
 
 | Ambiente | URL |
 |---|---|
-| **Frontend (Netlify)** | **https://inquisitive-torte-0fd4c0.netlify.app/** |
+| **Frontend (Netlify)** | **https://cerulean-syrniki-02dc26.netlify.app/** |
 | **Backend (Render)** | URL pública do serviço `system-atos-api` no Render (ex.: `https://system-atos-api.onrender.com`) |
 | **Health check** | `https://<API_URL>/health` |
 

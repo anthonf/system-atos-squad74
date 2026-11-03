@@ -40,7 +40,7 @@ flowchart LR
 
 | Camada | Provedor | URL | Observação |
 |---|---|---|---|
-| Frontend | Netlify | <https://inquisitive-torte-0fd4c0.netlify.app/> | Build estática do React/Vite |
+| Frontend | Netlify | <https://cerulean-syrniki-02dc26.netlify.app/> | Build estática do React/Vite |
 | API | Render | `https://<servico>.onrender.com` | O blueprint cria o serviço `system-atos-api`; copie a URL final no dashboard |
 | API — health check | Render | `https://<servico>.onrender.com/health` | Rota anônima; deve retornar `Healthy` |
 | Banco | Neon, Supabase ou Render Postgres | String de conexão privada | Nunca exposta no frontend |
@@ -128,7 +128,7 @@ VITE_API_URL=https://system-atos-api.onrender.com
    - **Build command:** `npm ci && npm run build`
    - **Publish directory:** `dist`
 5. Salve e dispare **Deploy site**.
-6. Valide a aplicação em <https://inquisitive-torte-0fd4c0.netlify.app/>.
+6. Valide a aplicação em <https://cerulean-syrniki-02dc26.netlify.app/>.
 7. Se a variável for alterada, use **Clear cache and deploy site** para garantir que o novo valor seja embutido no bundle.
 
 ### 2.4 Fallback de SPA
@@ -146,7 +146,7 @@ Isso permite acessar diretamente rotas como `/fila`, `/dashboard` e `/ticket/DEM
 O backend lê as origens permitidas da seção `Frontend:Origins`. Para o frontend na Netlify, configure a origem **exata**, sem barra final:
 
 ```text
-https://inquisitive-torte-0fd4c0.netlify.app
+https://cerulean-syrniki-02dc26.netlify.app
 ```
 
 Em desenvolvimento, mantenha também:
@@ -158,7 +158,7 @@ http://localhost:5173
 No Render, a forma mais segura de configurar múltiplas origens é usar variáveis indexadas:
 
 ```text
-Frontend__Origins__0=https://inquisitive-torte-0fd4c0.netlify.app
+Frontend__Origins__0=https://cerulean-syrniki-02dc26.netlify.app
 Frontend__Origins__1=http://localhost:5173
 ```
 
@@ -303,7 +303,7 @@ A API lança erro na inicialização se **nem** `Sso__JwksUrl` **nem** `Sso__Pub
 | Variável | Exemplo | Descrição |
 |---|---|---|
 | `Sso__ApiKey` | valor aleatório longo | Chave aceita no header `X-Api-Key` para webhooks/n8n. Não autentica rotas de usuário. |
-| `Frontend__Origins` | `https://inquisitive-torte-0fd4c0.netlify.app` | Origem permitida no CORS. Para várias origens, use `Frontend__Origins__0`, `Frontend__Origins__1`, etc. |
+| `Frontend__Origins` | `https://cerulean-syrniki-02dc26.netlify.app` | Origem permitida no CORS. Para várias origens, use `Frontend__Origins__0`, `Frontend__Origins__1`, etc. |
 | `Sso__ClockSkewSeconds` | `30` | Tolerância de relógio na validação do JWT. |
 | `Sso__CacheTtlSeconds` | `60` | Cache do provisionamento de usuário. |
 | `Sso__ClaimNames__Sub` | `sub` | Nome da claim de identificação do usuário. |
@@ -698,7 +698,7 @@ Se o Render estiver configurado com outro emissor/audiência, acrescente ao scri
 
 ### 6.3 Roteiro de avaliação
 
-1. Abra <https://inquisitive-torte-0fd4c0.netlify.app/>.
+1. Abra <https://cerulean-syrniki-02dc26.netlify.app/>.
 2. Gere o token do Atos com `-Admin` e cole em `/login`.
 3. Confirme nome, grupo e papel exibidos; acesse **Fila** e **Dashboard**.
 4. Para testar um cliente, gere o token correspondente e use a API/portal do cliente. O painel interno rejeitará o token de `Cliente`, o que é o comportamento esperado.
