@@ -93,9 +93,13 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddMemoryCache();
 builder.Services.AddHealthChecks();
 
-var origensFrontend = builder.Configuration.GetSection("Cors:AllowedOrigins").GetChildren()
-    .Select(origem => origem.Value)
+// Origens aceitas vêm de "Cors:AllowedOrigins" (Cors__AllowedOrigins__0, ...) e de
+// "Frontend:Origins" (Frontend__Origins no Render). Ambas aceitam lista ou valor único.
+var origensFrontend = new[] { "Cors:AllowedOrigins", "Frontend:Origins" }
+    .SelectMany(secao => LerOrigens(builder.Configuration, secao))
     .Where(origem => !string.IsNullOrWhiteSpace(origem))
+    .Select(origem => origem!)
+    .Distinct(StringComparer.OrdinalIgnoreCase)
     .ToArray();
 if (origensFrontend.Length == 0 && builder.Environment.IsDevelopment())
 {
@@ -108,12 +112,30 @@ builder.Services.AddCors(options =>
     {
         if (origensFrontend.Length > 0)
         {
-            policy.WithOrigins(origensFrontend!)
+            policy.WithOrigins(origensFrontend)
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        }
+        else
+        {
+            // Sem origens configuradas (ex.: produção no Render): libera o acesso
+            // para não bloquear o front por CORS.
+            policy.AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         }
     });
 });
+
+static IEnumerable<string?> LerOrigens(IConfiguration configuration, string secao)
+{
+    var section = configuration.GetSection(secao);
+    yield return section.Value;
+    foreach (var filho in section.GetChildren())
+    {
+        yield return filho.Value;
+    }
+}
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);

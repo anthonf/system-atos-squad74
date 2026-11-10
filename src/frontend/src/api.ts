@@ -8,7 +8,7 @@ import i18n from './i18n';
 import { parseApiDate } from './dates';
 import type { PriorityKey, Session, StatusKey, Ticket } from './types';
 
-const BASE_URL = ((import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:5177').replace(/\/$/, '');
+const BASE_URL = (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://system-atos-api.onrender.com' : 'http://localhost:5177')).replace(/\/$/, '');
 export const TITULO_MAX = 200;
 
 /* ---------------------------------------------------------------------- */
