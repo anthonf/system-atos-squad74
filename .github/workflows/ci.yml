@@ -1,0 +1,88 @@
+name: CI — Build, Test & Docker
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - main
+  pull_request:
+
+jobs:
+  backend:
+    name: Backend (.NET 10)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: supportatos
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: supportatos
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      ConnectionStrings__DefaultConnection: 'Host=localhost;Port=5433;Database=supportatos;Username=admin;Password=supportatos'
+      ASPNETCORE_ENVIRONMENT: Testing
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore dependencies
+        run: dotnet restore src/backend/SupportAtos.slnx
+
+      - name: Build (Release)
+        run: dotnet build src/backend/SupportAtos.slnx --no-restore -c Release
+
+      - name: Run unit tests
+        run: >
+          dotnet test src/backend/tests/SupportAtos.Application.Tests/SupportAtos.Application.Tests.csproj
+          --no-build -c Release
+          --logger 'trx;LogFileName=unit-results.xml'
+          --results-directory TestResults/
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: TestResults/
+
+      - name: Docker build (validate Dockerfile)
+        run: docker build -t supportatos-api:ci src/backend/
+
+  frontend:
+    name: Frontend (Node 20 + Vite)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: src/frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --prefix src/frontend
+
+      - name: Type-check
+        run: npm run type-check --prefix src/frontend || npx tsc --noEmit --project src/frontend/tsconfig.json
+
+      - name: Build (Vite)
+        run: npm run build --prefix src/frontend
+
+      - name: Upload frontend dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: src/frontend/dist/
