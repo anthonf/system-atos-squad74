@@ -1,0 +1,48 @@
+# Contexto de build: src/backend/
+
+# ===== Artefatos de build =====
+**/bin/
+**/obj/
+**/TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# ===== Fora da imagem da API =====
+tests/
+tools/
+scripts/
+database/
+Db.SuporteAtos/
+*.md
+SupportAtos.slnx
+
+# ===== Docker =====
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+
+# ===== Segredos e config local (nunca entram na imagem) =====
+**/keys/
+**/*.pem
+.env
+.env.*
+*.local.json
+**/secrets.json
+
+# ===== IDEs / VCS / SO =====
+.git/
+.gitignore
+.gitattributes
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# ===== Logs =====
+*.log
+logs/

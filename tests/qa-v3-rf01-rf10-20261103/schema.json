@@ -1,0 +1,601 @@
+{
+  "columns": [
+    {
+      "table_name": "__EFMigrationsHistory",
+      "column_name": "MigrationId",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "__EFMigrationsHistory",
+      "column_name": "ProductVersion",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "anexo",
+      "column_name": "id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "anexo",
+      "column_name": "interacao_id",
+      "data_type": "integer",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "anexo",
+      "column_name": "nome_arquivo",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "anexo",
+      "column_name": "caminho",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "anexo",
+      "column_name": "tamanho_bytes",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "anexo",
+      "column_name": "chamado_id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "anexo",
+      "column_name": "tipo_mime",
+      "data_type": "character varying",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "codigo_publico",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "usuario_id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "grupo_empresa_id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "sla_config_id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "produto",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "categoria",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "status",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "prioridade",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "sla_prazo_resolucao",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "criado_em",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "fechado_em",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "agente_id",
+      "data_type": "integer",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "aguardando_desde",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "atualizado_em",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "descricao",
+      "data_type": "text",
+      "is_nullable": "NO",
+      "column_default": "''::text"
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "sla_prazo_resposta",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "chamado",
+      "column_name": "titulo",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": "''::character varying"
+    },
+    {
+      "table_name": "grupo_empresa",
+      "column_name": "id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "grupo_empresa",
+      "column_name": "nome",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "grupo_empresa",
+      "column_name": "codigo_externo",
+      "data_type": "character varying",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "grupo_empresa",
+      "column_name": "criado_em",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "column_default": "'-infinity'::timestamp without time zone"
+    },
+    {
+      "table_name": "grupo_empresa",
+      "column_name": "grupo_pai_id",
+      "data_type": "integer",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "grupo_empresa",
+      "column_name": "tipo",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": "'matriz'::character varying"
+    },
+    {
+      "table_name": "interacao",
+      "column_name": "id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "interacao",
+      "column_name": "autor_id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "interacao",
+      "column_name": "chamado_id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "interacao",
+      "column_name": "tipo",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "interacao",
+      "column_name": "mensagem",
+      "data_type": "text",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "interacao",
+      "column_name": "criado_em",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "log_auditoria",
+      "column_name": "id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "log_auditoria",
+      "column_name": "chamado_id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "log_auditoria",
+      "column_name": "usuario_id",
+      "data_type": "integer",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "log_auditoria",
+      "column_name": "acao",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "log_auditoria",
+      "column_name": "campo_alterado",
+      "data_type": "character varying",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "log_auditoria",
+      "column_name": "valor_anterior",
+      "data_type": "text",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "log_auditoria",
+      "column_name": "valor_novo",
+      "data_type": "text",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "log_auditoria",
+      "column_name": "criado_em",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "provisionamento_audit",
+      "column_name": "id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "provisionamento_audit",
+      "column_name": "codigo_externo_usuario",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "provisionamento_audit",
+      "column_name": "codigo_externo_grupo",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "provisionamento_audit",
+      "column_name": "acao",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "provisionamento_audit",
+      "column_name": "data",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "sla_config",
+      "column_name": "id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "sla_config",
+      "column_name": "produto",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "sla_config",
+      "column_name": "categoria",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "sla_config",
+      "column_name": "prioridade",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "sla_config",
+      "column_name": "tempo_resposta_min",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "sla_config",
+      "column_name": "tempo_resolucao_min",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "sla_config",
+      "column_name": "ativo",
+      "data_type": "boolean",
+      "is_nullable": "NO",
+      "column_default": "true"
+    },
+    {
+      "table_name": "usuario",
+      "column_name": "id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "usuario",
+      "column_name": "nome",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "usuario",
+      "column_name": "email",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "usuario",
+      "column_name": "grupo_empresa_id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "usuario",
+      "column_name": "papel",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "usuario",
+      "column_name": "codigo_externo",
+      "data_type": "character varying",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "usuario",
+      "column_name": "atualizado_em",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "usuario",
+      "column_name": "criado_em",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "column_default": "'-infinity'::timestamp without time zone"
+    }
+  ],
+  "constraints": [
+    {
+      "conname": "FK_anexo_chamado_chamado_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (chamado_id) REFERENCES chamado(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "FK_anexo_interacao_interacao_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (interacao_id) REFERENCES interacao(id)"
+    },
+    {
+      "conname": "FK_chamado_grupo_empresa_grupo_empresa_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (grupo_empresa_id) REFERENCES grupo_empresa(id)"
+    },
+    {
+      "conname": "FK_chamado_sla_config_sla_config_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (sla_config_id) REFERENCES sla_config(id)"
+    },
+    {
+      "conname": "FK_chamado_usuario_agente_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (agente_id) REFERENCES usuario(id)"
+    },
+    {
+      "conname": "FK_chamado_usuario_usuario_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (usuario_id) REFERENCES usuario(id)"
+    },
+    {
+      "conname": "FK_grupo_empresa_grupo_empresa_grupo_pai_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (grupo_pai_id) REFERENCES grupo_empresa(id)"
+    },
+    {
+      "conname": "FK_interacao_chamado_chamado_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (chamado_id) REFERENCES chamado(id)"
+    },
+    {
+      "conname": "FK_interacao_usuario_autor_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (autor_id) REFERENCES usuario(id)"
+    },
+    {
+      "conname": "FK_log_auditoria_chamado_chamado_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (chamado_id) REFERENCES chamado(id)"
+    },
+    {
+      "conname": "FK_log_auditoria_usuario_usuario_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (usuario_id) REFERENCES usuario(id)"
+    },
+    {
+      "conname": "FK_usuario_grupo_empresa_grupo_empresa_id",
+      "contype": "f",
+      "convalidated": true,
+      "definition": "FOREIGN KEY (grupo_empresa_id) REFERENCES grupo_empresa(id)"
+    },
+    {
+      "conname": "PK___EFMigrationsHistory",
+      "contype": "p",
+      "convalidated": true,
+      "definition": "PRIMARY KEY (\"MigrationId\")"
+    },
+    {
+      "conname": "PK_anexo",
+      "contype": "p",
+      "convalidated": true,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "PK_chamado",
+      "contype": "p",
+      "convalidated": true,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "PK_grupo_empresa",
+      "contype": "p",
+      "convalidated": true,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "PK_interacao",
+      "contype": "p",
+      "convalidated": true,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "PK_log_auditoria",
+      "contype": "p",
+      "convalidated": true,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "PK_provisionamento_audit",
+      "contype": "p",
+      "convalidated": true,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "PK_sla_config",
+      "contype": "p",
+      "convalidated": true,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "PK_usuario",
+      "contype": "p",
+      "convalidated": true,
+      "definition": "PRIMARY KEY (id)"
+    }
+  ]
+}

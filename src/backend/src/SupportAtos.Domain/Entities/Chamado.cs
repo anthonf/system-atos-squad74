@@ -91,7 +91,7 @@ public class Chamado
         SlaCategoria slaCategoria,
         string produto,
         string categoria,
-        string titulo = "",
+        string titulo,
         string descricao = "")
     {
         if (string.IsNullOrWhiteSpace(codigoPublico))
@@ -124,7 +124,9 @@ public class Chamado
             throw new Exceptions.DomainException("A categoria é obrigatória.");
         }
 
-        var tituloFinal = string.IsNullOrWhiteSpace(titulo) ? categoria.Trim() : titulo.Trim();
+        var tituloFinal = string.IsNullOrWhiteSpace(titulo)
+            ? throw new Exceptions.DomainException("O título é obrigatório.")
+            : titulo.Trim();
         var descricaoFinal = string.IsNullOrWhiteSpace(descricao) ? string.Empty : descricao.Trim();
 
         return new Chamado(codigoPublico, usuarioId, grupoEmpresaId, slaCategoria, produto.Trim(), categoria.Trim(), tituloFinal, descricaoFinal, DateTime.UtcNow);

@@ -3,6 +3,7 @@ using SupportAtos.Application.DTOs;
 using SupportAtos.Application.Exceptions;
 using SupportAtos.Application.Mappings;
 using SupportAtos.Application.Ports;
+using SupportAtos.Application.Validation;
 using SupportAtos.Domain.Entities;
 using SupportAtos.Domain.Enums;
 
@@ -27,28 +28,26 @@ public class CriarChamadoUseCase
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ChamadoDto> Handle(CriarChamadoInput input, CancellationToken cancellationToken = default)
+    public Task<ChamadoDto> Handle(CriarChamadoInput input, CancellationToken cancellationToken = default)
+        => Handle(input, _currentUser.UsuarioAtual, null, cancellationToken);
+
+    public async Task<ChamadoDto> Handle(
+        CriarChamadoInput input,
+        PortalUserContext usuarioAtual,
+        IReadOnlyList<AnexoInput>? anexos = null,
+        CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(input.Produto))
-        {
-            throw new ValidationException("O produto é obrigatório.");
-        }
+        var produto = ValidacaoTexto.Obrigatorio(input.Produto, "produto", 100);
+        var categoria = ValidacaoTexto.Obrigatorio(input.Categoria, "categoria", 100);
+        var titulo = string.IsNullOrWhiteSpace(input.Titulo)
+            ? throw new ValidationException("O título é obrigatório.")
+            : ValidacaoTexto.Obrigatorio(input.Titulo, "titulo", 200);
+        var mensagem = ValidacaoTexto.Obrigatorio(input.MensagemInicial, "mensagemInicial", 5000);
+        var descricao = ValidacaoTexto.Opcional(input.Descricao, "descricao", 5000) ?? mensagem;
 
-        if (string.IsNullOrWhiteSpace(input.Categoria))
-        {
-            throw new ValidationException("A categoria é obrigatória.");
-        }
-
-        if (string.IsNullOrWhiteSpace(input.MensagemInicial))
-        {
-            throw new ValidationException("A mensagem inicial é obrigatória.");
-        }
-
-        var usuarioAtual = _currentUser.UsuarioAtual;
-
-        var sla = await _slaCategoriaRepository.GetByProdutoECategoriaAsync(input.Produto, input.Categoria, cancellationToken)
+        var sla = await _slaCategoriaRepository.GetByProdutoECategoriaAsync(produto, categoria, cancellationToken)
             ?? throw new ValidationException(
-                $"Nenhuma categoria de SLA encontrada para o produto '{input.Produto}' e categoria '{input.Categoria}'.");
+                $"Nenhuma categoria de SLA encontrada para o produto '{produto}' e categoria '{categoria}'.");
 
         var codigoPublico = await GerarCodigoPublicoUnicoAsync(cancellationToken);
 
@@ -57,11 +56,20 @@ public class CriarChamadoUseCase
             usuarioAtual.UsuarioIdInterno,
             usuarioAtual.GrupoEmpresaIdInterno,
             sla,
-            input.Produto,
-            input.Categoria,
-            input.Titulo ?? string.Empty,
-            string.IsNullOrWhiteSpace(input.Descricao) ? input.MensagemInicial : input.Descricao);
-        chamado.AdicionarInteracao(usuarioAtual.UsuarioIdInterno, TipoInteracao.Publica, input.MensagemInicial, DateTime.UtcNow);
+            produto,
+            categoria,
+            titulo,
+            descricao);
+        var interacao = chamado.AdicionarInteracao(
+            usuarioAtual.UsuarioIdInterno, TipoInteracao.Publica, mensagem, DateTime.UtcNow);
+
+        if (anexos is not null)
+        {
+            foreach (var anexo in anexos)
+            {
+                interacao.AdicionarAnexo(anexo.NomeArquivo!, anexo.Url!, anexo.TamanhoBytes);
+            }
+        }
 
         await _chamadoRepository.AddAsync(chamado, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

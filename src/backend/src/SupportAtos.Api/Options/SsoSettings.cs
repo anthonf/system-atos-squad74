@@ -20,9 +20,6 @@ public class SsoSettings
 
     public int CacheTtlSeconds { get; set; } = 60;
 
-    /// <summary>API key aceita no header X-Api-Key para webhooks máquina-a-máquina (ex.: n8n).</summary>
-    public string? ApiKey { get; set; }
-
     public ClaimNamesSettings ClaimNames { get; set; } = new();
 }
 

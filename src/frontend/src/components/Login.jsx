@@ -31,8 +31,8 @@ function ProductPreview() {
       </Stack>
       <Box sx={{ display: 'grid', gridTemplateColumns: '42px 1fr', height: 225 }}>
         <Stack alignItems="center" spacing={2} sx={{ pt: 1.4, borderRight: '1px solid #242126', bgcolor: '#121113' }}>
-          <Box sx={{ width: 20, height: 20, display: 'grid', placeItems: 'center', borderRadius: 1, bgcolor: '#e85a72', fontSize: 8, fontWeight: 800, color: '#fff' }}>A</Box>
-          {[17, 12, 12, 12].map((w, i) => <Box key={i} sx={{ width: w, height: 3, borderRadius: 1, bgcolor: i === 0 ? '#e85a72' : '#3a363c' }} />)}
+          <Box sx={{ width: 20, height: 20, display: 'grid', placeItems: 'center', borderRadius: 1, bgcolor: '#c24673', fontSize: 8, fontWeight: 800, color: '#fff' }}>A</Box>
+          {[17, 12, 12, 12].map((w, i) => <Box key={i} sx={{ width: w, height: 3, borderRadius: 1, bgcolor: i === 0 ? '#c24673' : '#3a363c' }} />)}
         </Stack>
         <Box sx={{ p: '15px 18px', minWidth: 0 }}>
           <Typography sx={{ fontSize: 6, color: '#7d7880', textTransform: 'uppercase', letterSpacing: 0.7 }}>Visão geral</Typography>
@@ -105,46 +105,27 @@ function Showcase() {
   );
 }
 
-export default function LoginScreen({ onLogin, themeMode, setThemeMode, onToggleTheme }) {
+export default function LoginScreen({ onLogin, themeMode, setThemeMode }) {
   const [tab, setTab] = useState('cliente');
   const [loading, setLoading] = useState(false);
-  const [token, setTokenField] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [showSenha, setShowSenha] = useState(false);
   const [error, setError] = useState('');
   const isClient = tab === 'cliente';
 
-  // Compatibilidade: usar onToggleTheme se setThemeMode não existir
-  const toggleTheme = setThemeMode
-    ? () => setThemeMode(themeMode === 'light' ? 'dark' : 'light')
-    : onToggleTheme;
-
   const handleSso = () => {
     setLoading(true);
     setTimeout(() => onLogin({ role: 'cliente', nome: 'Fernanda Duarte', empresa: 'Banco Confiança' }), 900);
   };
 
-  const handleAgentSubmit = async (e) => {
+  const handleAgentSubmit = (e) => {
     e.preventDefault();
-    setError('');
-    // Aceita login por JWT (token colado)
-    const jwt = token.trim();
-    if (jwt) {
-      setLoading(true);
-      try {
-        await onLogin(jwt);
-      } catch (err) {
-        setError(err.message || 'Token inválido ou expirado.');
-        setLoading(false);
-      }
-      return;
-    }
-    // Fallback: login por e-mail/senha (simulado)
     if (!email.includes('@') || senha.length < 4) {
-      setError('Cole o token JWT ou informe um e-mail corporativo válido e uma senha com pelo menos 4 caracteres.');
+      setError('Informe um e-mail corporativo válido e uma senha com pelo menos 4 caracteres.');
       return;
     }
+    setError('');
     setLoading(true);
     const nome = email.split('@')[0].split('.').map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
     setTimeout(() => onLogin({ role: 'agente', nome, empresa: null, email }), 700);
@@ -200,26 +181,10 @@ export default function LoginScreen({ onLogin, themeMode, setThemeMode, onToggle
           ) : (
             <Box component="form" onSubmit={handleAgentSubmit} noValidate>
               <Stack spacing={2}>
-                <TextField
-                  label="Token JWT ou E-mail corporativo"
-                  value={token || email}
-                  onChange={(e) => {
-                    const v = e.target.value;
-                    if (v.trim().split('.').length === 3) {
-                      setTokenField(v);
-                      setEmail('');
-                    } else {
-                      setTokenField('');
-                      setEmail(v);
-                    }
-                  }}
-                  fullWidth
-                  autoComplete="off"
-                  placeholder="Cole o token JWT aqui ou nome.sobrenome@atoscapital.com"
-                  InputProps={{ startAdornment: <InputAdornment position="start"><MailOutline fontSize="small" /></InputAdornment> }}
-                />
+                <TextField label="E-mail corporativo" type="email" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth autoComplete="username"
+                  placeholder="nome.sobrenome@atoscapital.com"
+                  InputProps={{ startAdornment: <InputAdornment position="start"><MailOutline fontSize="small" /></InputAdornment> }} />
                 <TextField label="Senha" type={showSenha ? 'text' : 'password'} value={senha} onChange={(e) => setSenha(e.target.value)} fullWidth autoComplete="current-password"
-                  placeholder={token.trim() ? '(opcional se usar token)' : ''}
                   InputProps={{
                     startAdornment: <InputAdornment position="start"><LockOutlined fontSize="small" /></InputAdornment>,
                     endAdornment: (

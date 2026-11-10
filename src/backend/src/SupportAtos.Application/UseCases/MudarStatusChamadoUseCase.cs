@@ -13,15 +13,18 @@ public class MudarStatusChamadoUseCase
     private readonly ICurrentUser _currentUser;
     private readonly IChamadoRepository _chamadoRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IWebhookDispatcher _webhook;
 
     public MudarStatusChamadoUseCase(
         ICurrentUser currentUser,
         IChamadoRepository chamadoRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IWebhookDispatcher webhook)
     {
         _currentUser = currentUser;
         _chamadoRepository = chamadoRepository;
         _unitOfWork = unitOfWork;
+        _webhook = webhook;
     }
 
     public async Task<ChamadoDto> Handle(string codigoPublico, MudarStatusInput input, CancellationToken cancellationToken = default)
@@ -47,6 +50,14 @@ public class MudarStatusChamadoUseCase
 
         chamado.MudarStatus(input.NovoStatus, DateTime.UtcNow);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        var evento = chamado.Status switch
+        {
+            StatusChamado.AguardandoCliente => WebhookEvent.EventoAguardandoCliente,
+            StatusChamado.Fechado => WebhookEvent.EventoFechado,
+            _ => WebhookEvent.EventoAtualizado
+        };
+        await _webhook.EnviarAsync(WebhookEvent.De(chamado, evento), cancellationToken);
 
         return DtoMapper.ToDto(chamado);
     }

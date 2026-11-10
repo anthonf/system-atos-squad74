@@ -5,6 +5,7 @@ using SupportAtos.Application.Abstractions;
 using SupportAtos.Application.Ports;
 using SupportAtos.Infrastructure.Persistence;
 using SupportAtos.Infrastructure.Repositories;
+using SupportAtos.Infrastructure.Webhooks;
 
 namespace SupportAtos.Infrastructure;
 
@@ -12,8 +13,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("A connection string 'DefaultConnection' não está configurada.");
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException(
+                "A connection string 'DefaultConnection' não está configurada. Defina via user-secrets ou variável de ambiente.");
+        }
 
         services.AddDbContext<SupportAtosDbContext>(options =>
             options.UseNpgsql(connectionString));
@@ -25,6 +30,10 @@ public static class DependencyInjection
         services.AddScoped<IProvisionamentoAuditRepository, ProvisionamentoAuditRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUniqueConstraintViolationDetector, NpgsqlUniqueViolationDetector>();
+
+        services.Configure<WebhookSettings>(configuration.GetSection(WebhookSettings.SectionName));
+        services.AddHttpClient("webhooks");
+        services.AddSingleton<IWebhookDispatcher, HttpWebhookDispatcher>();
 
         services.AddHostedService<DevelopmentDbSeeder>();
 

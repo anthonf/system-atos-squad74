@@ -1,0 +1,226 @@
+{
+  "reason": "Permitir testes independentes apos primeira tentativa sem IDs fixos; dados apenas no banco QA.",
+  "before": {
+    "database": "qa_v3_138ddc9400",
+    "role": "qa_v3",
+    "__EFMigrationsHistory": [
+      {
+        "MigrationId": "20260915173343_InitialCreate",
+        "ProductVersion": "10.0.0"
+      },
+      {
+        "MigrationId": "20260919141706_AddPortalExternalId",
+        "ProductVersion": "10.0.0"
+      },
+      {
+        "MigrationId": "20260927195618_AlinharAoSqlOficial",
+        "ProductVersion": "10.0.0"
+      }
+    ],
+    "anexo": [],
+    "chamado": [],
+    "grupo_empresa": [
+      {
+        "id": 3301,
+        "nome": "QA V3 Legado",
+        "codigo_externo": "95001",
+        "criado_em": "2026-11-03T14:46:13.747803",
+        "grupo_pai_id": null,
+        "tipo": "matriz"
+      },
+      {
+        "id": 71001,
+        "nome": "QA V3 Grupo A",
+        "codigo_externo": "v3-grupo-a",
+        "criado_em": "2026-11-03T14:46:13.747803",
+        "grupo_pai_id": null,
+        "tipo": "matriz"
+      },
+      {
+        "id": 71002,
+        "nome": "QA V3 Grupo B",
+        "codigo_externo": "v3-grupo-b",
+        "criado_em": "2026-11-03T14:46:13.747803",
+        "grupo_pai_id": null,
+        "tipo": "matriz"
+      }
+    ],
+    "interacao": [],
+    "log_auditoria": [],
+    "provisionamento_audit": [],
+    "sla_config": [
+      {
+        "id": 1,
+        "produto": "QA",
+        "categoria": "Valid",
+        "prioridade": "Media",
+        "tempo_resposta_min": 60,
+        "tempo_resolucao_min": 480,
+        "ativo": true
+      }
+    ],
+    "usuario": [
+      {
+        "id": 2301,
+        "nome": "QA V3 Legado",
+        "email": "legado@qa.example.invalid",
+        "grupo_empresa_id": 3301,
+        "papel": "Cliente",
+        "codigo_externo": "94001",
+        "atualizado_em": null,
+        "criado_em": "2026-11-03T14:46:13.74905"
+      },
+      {
+        "id": 61001,
+        "nome": "QA V3 A",
+        "email": "a@qa.example.invalid",
+        "grupo_empresa_id": 71001,
+        "papel": "Cliente",
+        "codigo_externo": "v3-a",
+        "atualizado_em": null,
+        "criado_em": "2026-11-03T14:46:13.74905"
+      },
+      {
+        "id": 61002,
+        "nome": "QA V3 B",
+        "email": "b@qa.example.invalid",
+        "grupo_empresa_id": 71002,
+        "papel": "Cliente",
+        "codigo_externo": "v3-b",
+        "atualizado_em": null,
+        "criado_em": "2026-11-03T14:46:13.74905"
+      },
+      {
+        "id": 61003,
+        "nome": "QA V3 C",
+        "email": "c@qa.example.invalid",
+        "grupo_empresa_id": 71001,
+        "papel": "Cliente",
+        "codigo_externo": "v3-c",
+        "atualizado_em": null,
+        "criado_em": "2026-11-03T14:46:13.74905"
+      }
+    ]
+  },
+  "after": {
+    "database": "qa_v3_138ddc9400",
+    "role": "qa_v3",
+    "__EFMigrationsHistory": [
+      {
+        "MigrationId": "20260915173343_InitialCreate",
+        "ProductVersion": "10.0.0"
+      },
+      {
+        "MigrationId": "20260919141706_AddPortalExternalId",
+        "ProductVersion": "10.0.0"
+      },
+      {
+        "MigrationId": "20260927195618_AlinharAoSqlOficial",
+        "ProductVersion": "10.0.0"
+      }
+    ],
+    "anexo": [],
+    "chamado": [],
+    "grupo_empresa": [
+      {
+        "id": 3,
+        "nome": "QA Mock Grupo",
+        "codigo_externo": "qa-mock-grupo",
+        "criado_em": "2026-11-03T14:46:17.418931",
+        "grupo_pai_id": null,
+        "tipo": "matriz"
+      },
+      {
+        "id": 3301,
+        "nome": "QA V3 Legado",
+        "codigo_externo": "95001",
+        "criado_em": "2026-11-03T14:46:13.747803",
+        "grupo_pai_id": null,
+        "tipo": "matriz"
+      },
+      {
+        "id": 71001,
+        "nome": "QA V3 Grupo A",
+        "codigo_externo": "v3-grupo-a",
+        "criado_em": "2026-11-03T14:46:13.747803",
+        "grupo_pai_id": null,
+        "tipo": "matriz"
+      },
+      {
+        "id": 71002,
+        "nome": "QA V3 Grupo B",
+        "codigo_externo": "v3-grupo-b",
+        "criado_em": "2026-11-03T14:46:13.747803",
+        "grupo_pai_id": null,
+        "tipo": "matriz"
+      }
+    ],
+    "interacao": [],
+    "log_auditoria": [],
+    "provisionamento_audit": [],
+    "sla_config": [
+      {
+        "id": 1,
+        "produto": "QA",
+        "categoria": "Valid",
+        "prioridade": "Media",
+        "tempo_resposta_min": 60,
+        "tempo_resolucao_min": 480,
+        "ativo": true
+      }
+    ],
+    "usuario": [
+      {
+        "id": 4,
+        "nome": "QA Mock",
+        "email": "mock@qa.example.invalid",
+        "grupo_empresa_id": 3,
+        "papel": "Admin",
+        "codigo_externo": "qa-mock",
+        "atualizado_em": null,
+        "criado_em": "2026-11-03T14:46:17.419948"
+      },
+      {
+        "id": 2301,
+        "nome": "QA V3 Legado",
+        "email": "legado@qa.example.invalid",
+        "grupo_empresa_id": 3301,
+        "papel": "Cliente",
+        "codigo_externo": "94001",
+        "atualizado_em": null,
+        "criado_em": "2026-11-03T14:46:13.74905"
+      },
+      {
+        "id": 61001,
+        "nome": "QA V3 A",
+        "email": "a@qa.example.invalid",
+        "grupo_empresa_id": 71001,
+        "papel": "Cliente",
+        "codigo_externo": "v3-a",
+        "atualizado_em": null,
+        "criado_em": "2026-11-03T14:46:13.74905"
+      },
+      {
+        "id": 61002,
+        "nome": "QA V3 B",
+        "email": "b@qa.example.invalid",
+        "grupo_empresa_id": 71002,
+        "papel": "Cliente",
+        "codigo_externo": "v3-b",
+        "atualizado_em": null,
+        "criado_em": "2026-11-03T14:46:13.74905"
+      },
+      {
+        "id": 61003,
+        "nome": "QA V3 C",
+        "email": "c@qa.example.invalid",
+        "grupo_empresa_id": 71001,
+        "papel": "Cliente",
+        "codigo_externo": "v3-c",
+        "atualizado_em": null,
+        "criado_em": "2026-11-03T14:46:13.74905"
+      }
+    ]
+  },
+  "sql": "INSERT grupo_empresa id=3; INSERT usuario id=4 grupo_empresa_id=3"
+}

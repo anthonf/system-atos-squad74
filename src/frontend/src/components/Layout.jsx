@@ -83,7 +83,7 @@ function SidebarContent({ session, view, setView, onLogout, themeMode, setThemeM
 
 export function Sidebar({ mobileOpen, onMobileClose, ...props }) {
   const { atos } = useTheme();
-  const paper = { width: DRAWER_WIDTH, background: atos.menuGradient, border: 0, boxSizing: 'border-box' };
+  const paper = { width: DRAWER_WIDTH, background: atos.menuGradient, border: 0, boxSizing: 'border-box', '& *:focus-visible': { outlineColor: '#ffffff' } };
   return (
     <>
       <Drawer variant="temporary" open={mobileOpen} onClose={onMobileClose} ModalProps={{ keepMounted: true }}

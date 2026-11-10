@@ -1,0 +1,20 @@
+{
+  "container_id": "19fed0ac626399869a9efcab3ee95ad165ba433b85b258325d8c8b5ed05b3faf",
+  "container_name": "qa-v3-138ddc9400",
+  "label": "138ddc9400",
+  "image": "postgres:17",
+  "mounts": [],
+  "tmpfs": {
+    "/var/lib/postgresql/data": ""
+  },
+  "port": {
+    "HostIp": "127.0.0.1",
+    "HostPort": "19051"
+  },
+  "before_writes": {
+    "database": "qa_v3_138ddc9400",
+    "role": "qa_v3",
+    "public_tables": 0
+  },
+  "external_services": "Nenhum cliente HTTP/webhook de saida registrado na inicializacao/caso de uso inspecionado; sem secrets externos; ambiente Production. Somente chamadas locais."
+}

@@ -1,46 +1,57 @@
 # syntax=docker/dockerfile:1
+#
+# Dockerfile da SupportAtos.Api (.NET 10).
+# Contexto de build: src/backend/  (onde ficam este arquivo, Directory.Build.props e src/)
+#
+#   docker build -t supportatos-api .
+#   docker run --rm -p 8080:8080 \
+#     -e ConnectionStrings__DefaultConnection="Host=...;Port=5432;Database=supportatos;Username=...;Password=..." \
+#     supportatos-api
 
-# -----------------------------------------------------------------------------
-# Build stage
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Stage 1: build/publish
+# ---------------------------------------------------------------------------
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-WORKDIR /source
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
 
-# Copy only the project files first so NuGet restore is cached independently
-# from source code changes.
+# Copia só os .csproj (e o Directory.Build.props) para que o restore fique em
+# cache enquanto as dependências NuGet não mudarem.
 COPY Directory.Build.props ./
-COPY src/SupportAtos.Api/SupportAtos.Api.csproj ./src/SupportAtos.Api/
-COPY src/SupportAtos.Application/SupportAtos.Application.csproj ./src/SupportAtos.Application/
-COPY src/SupportAtos.Domain/SupportAtos.Domain.csproj ./src/SupportAtos.Domain/
-COPY src/SupportAtos.Infrastructure/SupportAtos.Infrastructure.csproj ./src/SupportAtos.Infrastructure/
+COPY src/SupportAtos.Domain/SupportAtos.Domain.csproj                 src/SupportAtos.Domain/
+COPY src/SupportAtos.Application/SupportAtos.Application.csproj       src/SupportAtos.Application/
+COPY src/SupportAtos.Infrastructure/SupportAtos.Infrastructure.csproj src/SupportAtos.Infrastructure/
+COPY src/SupportAtos.Api/SupportAtos.Api.csproj                       src/SupportAtos.Api/
 
+# Restaura só a API (as demais entram como referências de projeto).
 RUN dotnet restore src/SupportAtos.Api/SupportAtos.Api.csproj
 
-# Copy the remaining source code and publish in Release mode.
-COPY . .
+# Agora sim o código-fonte.
+COPY src/ src/
 
 RUN dotnet publish src/SupportAtos.Api/SupportAtos.Api.csproj \
-        --configuration Release \
-        --no-restore \
-        --output /app/publish \
-        /p:UseAppHost=false
+      -c ${BUILD_CONFIGURATION} \
+      -o /app/publish \
+      --no-restore \
+      /p:UseAppHost=false
 
-# -----------------------------------------------------------------------------
-# Runtime stage
-# -----------------------------------------------------------------------------
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+# ---------------------------------------------------------------------------
+# Stage 2: runtime (imagem enxuta, sem SDK)
+# ---------------------------------------------------------------------------
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 
-# Listen on all interfaces; Render/other platforms can override with $PORT.
-ENV ASPNETCORE_URLS=http://+:8080 \
-    ASPNETCORE_ENVIRONMENT=Production \
-    DOTNET_EnableDiagnostics=0
-
+# A imagem aspnet já escuta em 8080 (ASPNETCORE_HTTP_PORTS=8080) e traz o
+# usuário não-root "app" (variável APP_UID).
+ENV ASPNETCORE_ENVIRONMENT=Production
 EXPOSE 8080
 
-COPY --from=build --chown=$APP_UID:$APP_UID /app/publish ./
+COPY --from=build /app/publish .
 
-# Run as the non-root user provided by the official ASP.NET image.
 USER $APP_UID
+
+# A imagem não tem curl/wget; usa o /dev/tcp do bash para chamar /health.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080 && printf "GET /health HTTP/1.0\r\nHost: localhost\r\n\r\n" >&3 && head -n1 <&3 | grep -q " 200 "'
 
 ENTRYPOINT ["dotnet", "SupportAtos.Api.dll"]

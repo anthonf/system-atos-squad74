@@ -1,165 +1,285 @@
-# Atos Support Hub - Squad 74
+# SupportAtos
 
-Plataforma de suporte técnico da **Atos Capital** para abertura, acompanhamento e resolução de chamados, com painel interno de atendimento, ciclo de vida completo, SLA e autenticação via SSO/JWT.
+Sistema de suporte com portal do cliente e painel de atendimento.
 
-**Frontend em produção:** https://cerulean-syrniki-02dc26.netlify.app/
+Stack:
 
----
+- Backend: C# / .NET 10, ASP.NET Core, EF Core e PostgreSQL
+- Frontend: React 18, Vite e Material UI
+- Banco: PostgreSQL (nativo ou Docker)
 
-## 🚀 Deploy & Acesso ao Sistema
+## Aviso importante
 
-| Ambiente | URL |
-|---|---|
-| **Frontend (Netlify)** | **https://cerulean-syrniki-02dc26.netlify.app/** |
-| **Backend (Render)** | URL pública do serviço `system-atos-api` no Render (ex.: `https://system-atos-api.onrender.com`) |
-| **Health check** | `https://<API_URL>/health` |
+> A autenticacao esta temporariamente desativada para facilitar os testes locais.
+>
+> Procure por `AUTH-DESATIVADA` no codigo para encontrar todos os pontos alterados.
+>
+> Use este projeto somente em ambiente local. Nao exponha esta configuracao na internet.
 
-O frontend é uma **SPA React** publicada na Netlify. A API é uma **ASP.NET Core 10 Web API** conteinerizada com Docker e provisionada no Render pelo blueprint [`render.yaml`](render.yaml). O banco é **PostgreSQL 17** gerenciado.
+## Pre-requisitos
 
-### Usuários de teste para avaliação
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [Node.js 18+](https://nodejs.org/) com `npm`
+- PostgreSQL instalado ou Docker
+- Ferramenta do EF Core (instale uma vez):
 
-O sistema usa **SSO/JWT**, sem senha local armazenada. As identidades abaixo estão semeadas no banco e os tokens de teste são fornecidos pela equipe.
-
-| Nome | E-mail | Perfil | Papel no JWT/API | Grupo / Empresa |
-|---|---|---|---|---|
-| **Atos** | `atos@gmail.com` | **Gerente / Suporte** | `Admin` | Atos Capital - Matriz |
-| **Maria Silva** | `maria.silva@cliente.com` | Cliente | `Cliente` | Atos Capital - Matriz |
-| **João Pereira** | `joao.pereira@cliente.com` | Cliente | `Cliente` | Filial Recife |
-| **Ana Costa** | `ana.costa@cliente.com` | Cliente | `Cliente` | Filial São Paulo |
-| **Cliente Demo** | `cliente@demo.com` | Cliente | `Cliente` | Atos Capital - Matriz |
-
-- O painel da Netlify é o **painel interno** e aceita `Agente`, `Supervisor` e `Admin`.
-- O perfil de negócio **Gerente** equivale ao papel técnico **`Admin`** no enum atual da API.
-- Para acessar: abra `/login` e cole o JWT de teste no campo **JWT (Bearer)**.
-
-### Documentação de deploy
-
-O passo a passo completo está em **[docs/deploy.md](docs/deploy.md)**, incluindo:
-
-- arquitetura de implantação e variáveis de ambiente;
-- deploy no Render com `render.yaml` e publicação na Netlify;
-- inicialização do PostgreSQL e seeds (`database/atos_capital_postgresql.sql`);
-- credenciais de teste, smoke tests e troubleshooting.
-
----
-
-## 🐳 Como rodar localmente com Docker Compose
-
-### Pré-requisitos
-
-- [.NET SDK 10](https://dotnet.microsoft.com/download)
-- [Node.js 20+](https://nodejs.org/)
-- [Docker](https://www.docker.com/) com Docker Compose
-- Ferramenta EF Core (uma única vez): `dotnet tool install --global dotnet-ef`
-
-### 1. Suba o PostgreSQL
-
-```bash
-docker compose -f src/backend/docker-compose.yml up -d
+```powershell
+dotnet tool install --global dotnet-ef
 ```
 
-O banco fica disponível em `localhost:5433` com:
+Se o comando `dotnet ef` nao for encontrado, feche e abra o terminal novamente.
 
-- usuário: `admin`
-- senha: `supportatos`
-- database: `supportatos`
+## 1. Banco de dados
 
-> O compose do repositório sobe o **PostgreSQL 17**. A API e o frontend rodam com .NET e Node nos passos seguintes.
+Escolha uma das opcoes abaixo.
 
-### 2. Configure a API e aplique as migrations
+### Opcao A - PostgreSQL nativo
 
-```bash
-export ASPNETCORE_ENVIRONMENT=Development
-export ConnectionStrings__DefaultConnection="Host=localhost;Port=5433;Database=supportatos;Username=admin;Password=supportatos"
+Crie a base:
 
-cd src/backend
-dotnet ef database update \
-  --project src/SupportAtos.Infrastructure \
-  --startup-project src/SupportAtos.Api
+```powershell
+psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE supportatos;"
 ```
 
-### 3. Rode a API
+Configure a conexao fora do Git usando User Secrets:
 
-```bash
-cd src/backend
-dotnet run --project src/SupportAtos.Api
+```powershell
+cd src\backend\src\SupportAtos.Api
+
+dotnet user-secrets init
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=supportatos;Username=postgres;Password=SUA_SENHA"
 ```
+
+### Opcao B - PostgreSQL com Docker
+
+O compose do backend sobe o PostgreSQL na porta `5433`:
+
+```powershell
+cd src\backend
+docker compose up -d
+```
+
+Credenciais do container:
+
+- Usuario: `admin`
+- Senha: `supportatos`
+- Banco: `supportatos`
+- Porta no host: `5433`
+
+Configure a conexao:
+
+```powershell
+cd src\backend\src\SupportAtos.Api
+
+dotnet user-secrets init
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5433;Database=supportatos;Username=admin;Password=supportatos"
+```
+
+### Aplicar migrations
+
+A partir de `src\backend`:
+
+```powershell
+dotnet ef database update --project src/SupportAtos.Infrastructure --startup-project src/SupportAtos.Api
+```
+
+### Aplicar seed
+
+Ainda em `src\backend`, com o PostgreSQL nativo:
+
+```powershell
+psql -h localhost -p 5432 -U postgres -d supportatos -f database/seed.sql
+```
+
+Se estiver usando Docker, troque a porta e o usuario:
+
+```powershell
+psql -h localhost -p 5433 -U admin -d supportatos -f database/seed.sql
+```
+
+O `seed.sql` cria o minimo para testar a API: um grupo empresa, tres configuracoes de SLA e um usuario cliente.
+
+Como o backend e o frontend usam um usuario mock com ID `4` e grupo empresa `3`, aplique tambem o seed do mock:
+
+```powershell
+psql -h localhost -p 5432 -U postgres -d supportatos -f database/seed_mock.sql
+```
+
+No Docker, use `-p 5433 -U admin`.
+
+O arquivo `database/seed_mock.sql` e idempotente e cria o grupo `Grupo Norte` e o usuario `Admin` usados pela sessao mock.
+
+Existe tambem o arquivo `database/seed_chamados_exemplo.sql`, com chamados e interacoes de exemplo. Antes de usa-lo, confira os pre-requisitos descritos no topo do proprio arquivo, pois ele assume usuarios e SLAs com IDs especificos.
+
+> Nao aplique `database/atos_capital_postgresql.sql` junto com as migrations. Ele e um arquivo legado de referencia.
+
+## 2. Backend
+
+```powershell
+cd src\backend\src\SupportAtos.Api
+dotnet run --launch-profile http
+```
+
+A API sobe em:
 
 - API: `http://localhost:5177`
 - Health check: `http://localhost:5177/health`
-- Swagger (somente Development): `http://localhost:5177/swagger`
+- Swagger: `http://localhost:5177/swagger`
 
-### 4. Rode o frontend
+### Se o Windows bloquear o .exe
+
+Algumas maquinas com politica de Controle de Aplicativo bloqueiam o executavel gerado pelo `dotnet run`. Nesse caso, compile e rode a DLL:
+
+```powershell
+cd src\backend\src\SupportAtos.Api
+
+dotnet build
+
+$env:ASPNETCORE_ENVIRONMENT = "Development"
+$env:ASPNETCORE_URLS = "http://localhost:5177"
+
+dotnet bin\Debug\net10.0\SupportAtos.Api.dll
+```
+
+As variaveis de ambiente sao necessarias ao rodar a DLL diretamente, porque o `launchSettings.json` nao e aplicado.
+
+## 3. Frontend
 
 Em outro terminal:
 
-```bash
-cd src/frontend
-npm ci
+```powershell
+cd src\frontend
+npm install
 npm run dev
 ```
 
-Acesse **http://localhost:5173**. Em desenvolvimento, o Vite faz proxy de `/api` para `http://localhost:5177`; não é necessário criar `.env`.
-
-### 5. Gere um token de teste local
-
-```powershell
-cd src/backend
-.\scripts\mint-token.ps1 -Sub atos -Email atos@gmail.com -Name "Atos" `
-  -GrupoId atos-matriz -GrupoNome "Atos Capital - Matriz" -Admin
-```
-
-Cole o token no campo **JWT (Bearer)** da tela de login. O detalhamento do ambiente local está em [src/backend/README.md](src/backend/README.md) e [src/frontend/README.md](src/frontend/README.md).
-
----
-
-## 🧱 Stack
-
-| Camada | Tecnologias |
-|---|---|
-| Frontend | React 18, TypeScript, Vite, Material UI, React Router, Vitest |
-| Backend | C# / .NET 10, ASP.NET Core Web API, Clean Architecture, EF Core 10 |
-| Banco | PostgreSQL 17, migrations e seeds |
-| Autenticação | JWT RS256 (SSO) + API Key para integrações |
-| Infraestrutura | Docker multi-stage, Render Blueprint, Netlify |
-| Documentação | Markdown, UML, requisitos e guia de deploy |
-
-## ✨ Principais recursos
-
-- Abertura e acompanhamento de chamados com código público.
-- Fila de atendimento com filtros, atribuição manual/automática e polling.
-- Ciclo de vida do chamado: `Aberto → Em andamento → Aguardando cliente → Resolvido → Fechado`.
-- Interações públicas e notas internas.
-- SLA por categoria e prioridade, com indicadores de prazo.
-- Dashboard com contadores e visão gerencial.
-- Controle de acesso por papel (`Cliente`, `Agente`, `Supervisor`, `Admin`).
-- Provisionamento automático de usuários e grupos a partir do SSO/JWT.
-
-## 📁 Estrutura do repositório
+Abra:
 
 ```text
-.
-├── database/                 # Dump/seed legado do PostgreSQL
-├── docs/                     # Documentação acadêmica e guia de deploy
-│   └── deploy.md             # Deploy, variáveis, banco e acesso de teste
-├── src/
-│   ├── backend/              # API ASP.NET Core 10, Dockerfile e docker-compose
-│   └── frontend/             # SPA React/Vite publicada na Netlify
-├── render.yaml               # Blueprint do Render
-└── README.md
+http://localhost:5173
 ```
 
-## 📚 Documentação
+O Vite encaminha chamadas de `/api` para `http://localhost:5177`.
 
-- [Documentação geral do projeto](docs/README.md)
-- [Deploy e acesso ao sistema](docs/deploy.md)
-- [Visão geral e requisitos](docs/01-visao-geral.md)
-- [Requisitos do sistema](docs/02-requisitos.md)
-- [Arquitetura e dados](docs/03-arquitetura-dados.md)
-- [Implementação e testes](docs/04-implementacao-testes.md)
+Opcionalmente, crie um `.env` a partir do exemplo:
 
-## 👥 Equipe — Squad 74
+```powershell
+Copy-Item .env.example .env
+```
 
-João Pedro Alves Seixas; José Henrique Maciel Dantas; Vinícius A. Sampaio; Anthony Santos Costa; Kayone Silva do Nascimento; Danilo Sá Almeida; Marcus Lucas Dantas da Silva; Pedro Henrique Nunes de Melo.
+Conteudo esperado:
 
-**Aracaju – 2026 | Residência de Software — UNIT**
+```env
+VITE_API_URL=/api
+VITE_PROXY_TARGET=http://localhost:5177
+```
+
+O arquivo `.env` e ignorado pelo Git e nao deve ser commitado.
+
+## 4. Teste rapido
+
+1. Abra `http://localhost:5173`.
+2. A aplicacao deve abrir direto, sem tela de login, usando a sessao mock.
+3. Confirme que a fila de chamados carrega dados vindos da API.
+4. Abra um chamado e teste:
+   - envio de resposta ao cliente;
+   - nota interna;
+   - alteracao de status;
+   - assumir ou repassar o chamado.
+5. Abra o DevTools do navegador, aba Network, e confirme as chamadas para `/api/chamados` e `/api/usuarios/...`.
+
+### Criar um chamado de teste via API
+
+Como a sessao mock atual e de agente, o botao de novo chamado nao aparece na interface. Para popular a fila e testar o fluxo completo, crie um chamado pela API:
+
+```powershell
+$body = @{
+  produto = "Portal"
+  categoria = "Login"
+  titulo = "Chamado de teste"
+  descricao = "Criado via API para validar o fluxo."
+  mensagemInicial = "Criado via API para validar o fluxo."
+} | ConvertTo-Json
+
+Invoke-RestMethod -Method Post -Uri "http://localhost:5177/api/chamados" `
+  -ContentType "application/json" -Body $body
+```
+
+Depois atualize a pagina em `http://localhost:5173`.
+
+### Sobre os dados
+
+- Requisicoes `GET` sao seguras para consulta.
+- Requisicoes `POST` e `PATCH` alteram o banco.
+- O backend usa um usuario mock com ID `4` e grupo empresa `3`.
+- Em um banco novo, esse usuario e grupo precisam existir para testar criacao e atribuicao de chamados.
+
+## 5. Problemas comuns
+
+### O backend nao sobe e o Windows bloqueia o .exe
+
+Use o fallback com `dotnet bin\Debug\net10.0\SupportAtos.Api.dll`, conforme mostrado acima.
+
+### Erro de conexao com o PostgreSQL
+
+Confira:
+
+- se o PostgreSQL esta rodando;
+- se a porta e o usuario estao corretos (`5432/postgres` no nativo ou `5433/admin` no Docker);
+- se a connection string foi configurada via User Secrets.
+
+Teste a API:
+
+```powershell
+Invoke-RestMethod http://localhost:5177/health
+Invoke-RestMethod http://localhost:5177/api/chamados
+```
+
+### A fila aparece vazia
+
+Pode ser que o seed nao tenha sido aplicado ou que o banco nao tenha chamados. Verifique:
+
+```powershell
+Invoke-RestMethod http://localhost:5177/api/chamados
+```
+
+### Erro de CORS
+
+O backend libera `http://localhost:5173` e `http://127.0.0.1:5173`. Se voce usar outra porta, ajuste `Cors:AllowedOrigins` em `src\backend\src\SupportAtos.Api\appsettings.Development.json`.
+
+### Porta 5177 ou 5173 em uso
+
+Encerre o processo que esta usando a porta ou altere a URL do backend e o `VITE_PROXY_TARGET` no `.env`.
+
+## 6. Estrutura do projeto
+
+```text
+src/
+  backend/
+    src/
+      SupportAtos.Api/
+      SupportAtos.Application/
+      SupportAtos.Domain/
+      SupportAtos.Infrastructure/
+    database/
+      seed.sql
+      seed_mock.sql
+      seed_chamados_exemplo.sql
+  frontend/
+    src/
+      api/
+      components/
+      SupportPortal.jsx
+      data.js
+      theme.js
+database/
+docs/
+```
+
+## 7. Documentacao
+
+A pasta `docs/` contem a visao geral, requisitos, arquitetura, casos de uso e detalhes de implementacao.
+
+## Aviso final
+
+Este repositorio esta configurado para testes locais com autenticacao desativada. Antes de qualquer uso em producao, reative a autenticacao e revise todos os pontos marcados com `AUTH-DESATIVADA`.

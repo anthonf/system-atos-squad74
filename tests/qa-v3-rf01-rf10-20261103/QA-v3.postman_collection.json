@@ -1,0 +1,1337 @@
+{
+  "info": {
+    "name": "QA v3 RF01 RF10 — apoio de reproducao, nao executado no Postman",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:PORTA_QA"
+    },
+    {
+      "key": "qa_api_key",
+      "value": ""
+    },
+    {
+      "key": "qa_invalid_key",
+      "value": ""
+    },
+    {
+      "key": "qa_jwt",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "AUTH-01 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Processamento sem depender de JWT (vinculo avaliado separadamente). Resultado historico: APROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AUTH-02 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "HTTP 401 e nenhuma alteracao em qualquer tabela. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AUTH-03 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_invalid_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "HTTP 401 e nenhuma alteracao em qualquer tabela. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AUTH-04 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "HTTP 401 e nenhuma alteracao em qualquer tabela. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AUTH-05 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{qa_jwt}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "HTTP 401 e nenhuma alteracao em qualquer tabela. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AUTH-06 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_invalid_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{qa_jwt}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "HTTP 401 e nenhuma alteracao em qualquer tabela. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AUTH-07 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Processamento sem depender de JWT (vinculo avaliado separadamente). Resultado historico: APROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AUTH-08 AUTH-02",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Todas as variantes retornam 401 sem usuario, grupo, chamado ou interacao novos. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 62000,\n    \"nome\": \"QA Auth 0\",\n    \"email\": \"auth0@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 72000,\n    \"nome\": \"QA Auth Grupo 0\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AUTH-08 AUTH-03",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_invalid_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Todas as variantes retornam 401 sem usuario, grupo, chamado ou interacao novos. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 62001,\n    \"nome\": \"QA Auth 1\",\n    \"email\": \"auth1@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 72001,\n    \"nome\": \"QA Auth Grupo 1\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AUTH-08 AUTH-04",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Todas as variantes retornam 401 sem usuario, grupo, chamado ou interacao novos. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 62002,\n    \"nome\": \"QA Auth 2\",\n    \"email\": \"auth2@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 72002,\n    \"nome\": \"QA Auth Grupo 2\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AUTH-08 AUTH-05",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{qa_jwt}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Todas as variantes retornam 401 sem usuario, grupo, chamado ou interacao novos. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 62003,\n    \"nome\": \"QA Auth 3\",\n    \"email\": \"auth3@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 72003,\n    \"nome\": \"QA Auth Grupo 3\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AUTH-08 AUTH-06",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_invalid_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{qa_jwt}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Todas as variantes retornam 401 sem usuario, grupo, chamado ou interacao novos. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 62004,\n    \"nome\": \"QA Auth 4\",\n    \"email\": \"auth4@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 72004,\n    \"nome\": \"QA Auth Grupo 4\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-01 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar com codigo publico persistido e associado aos IDs 61001/71001 enviados no corpo. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-02 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Rejeitar ausencia de produto sem gravacoes; v3 nao fixa codigo HTTP. Resultado historico: APROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-03 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Rejeitar ausencia de categoria sem gravacoes; v3 nao fixa codigo HTTP. Resultado historico: APROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-04 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Rejeitar ausencia de descricao sem gravacoes; v3 nao fixa codigo HTTP. Resultado historico: APROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-05 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Avaliar se descricao preenchida e suficiente; v3 nao nomeia propriedade JSON. Resultado historico: NÃO VERIFICADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-06 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Aceitar omissao de titulo (opcional no DTO) ou anexos (opcionais expressamente na v3); codigo deve estar persistido. Resultado historico: APROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-07 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Aceitar omissao de titulo (opcional no DTO) ou anexos (opcionais expressamente na v3); codigo deve estar persistido. Resultado historico: APROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-08 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Utilizar dados do corpo e vincular aos IDs 61001/71001; testar duas estruturas plausiveis, sem defini-las como contrato oficial. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-08 estrutura-plana",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Utilizar dados do corpo e vincular aos IDs 61001/71001; testar duas estruturas plausiveis, sem defini-las como contrato oficial. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuarioId\": 61002,\n  \"usuarioNome\": \"QA V3 B\",\n  \"usuarioEmail\": \"b@qa.example.invalid\",\n  \"grupoEmpresaId\": 71002,\n  \"grupoEmpresaNome\": \"QA V3 Grupo B\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-09 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Rejeitar ausencia dos dados obrigatorios de identidade, sem persistencia indevida; sem status exato fixado pela v3. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-10 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Rejeitar ausencia dos dados obrigatorios de identidade, sem persistencia indevida; sem status exato fixado pela v3. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-11 produto",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Registrar ambas as combinacoes sem SLA, sem presumir regra normativa de rejeicao. Resultado historico: NÃO VERIFICADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA Sem SLA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-11 categoria",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Registrar ambas as combinacoes sem SLA, sem presumir regra normativa de rejeicao. Resultado historico: NÃO VERIFICADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"QA Sem SLA\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-12 principal",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/chamados/SA-084799423",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "GET do chamado criado deve corresponder ao codigo e conteudo realmente persistidos; nao avalia RF02. Resultado historico: APROVADO. Collection exportada, NAO executada no Postman."
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-13 cliente-A",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Cada chamado deve ter a identidade do seu corpo ao alternar clientes/grupos. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-13 cliente-B",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Cada chamado deve ter a identidade do seu corpo ao alternar clientes/grupos. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61002,\n    \"nome\": \"QA V3 B\",\n    \"email\": \"b@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71002,\n    \"nome\": \"QA V3 Grupo B\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF01-14 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "IDs 94001/95001 devem ser os IDs reais das entidades e do vinculo; codigo_externo das fixtures 2301/3301 nao substitui a regra. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 94001,\n    \"nome\": \"QA Portal ID\",\n    \"email\": \"portal@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 95001,\n    \"nome\": \"QA Portal Grupo\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-01 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar ambos na abertura, com IDs 61090/71090, e vincular o chamado. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61090,\n    \"nome\": \"QA Novo\",\n    \"email\": \"novo@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71090,\n    \"nome\": \"QA Grupo Novo\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-02 primeira",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-03 primeira",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61091,\n    \"nome\": \"QA Usuario Novo Existente\",\n    \"email\": \"novo-existente@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-04 primeira",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A Atualizado\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-05 primeira",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a-atualizado@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-06 primeira",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A Atualizado\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-07 primeira",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Nao duplicar usuario/grupo ja existentes ao repetir abertura com identidade igual. Nao exigir idempotencia do chamado. Resultado historico: APROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-07 repeticao",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Nao duplicar usuario/grupo ja existentes ao repetir abertura com identidade igual. Nao exigir idempotencia do chamado. Resultado historico: APROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-08 primeira",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-08 identidade-alternada",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61003,\n    \"nome\": \"QA V3 C\",\n    \"email\": \"c@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-09 primeira",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"QA V3 A\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"QA V3 Grupo A\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-09 identidade-alternada",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61002,\n    \"nome\": \"QA V3 B\",\n    \"email\": \"b@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71002,\n    \"nome\": \"QA V3 Grupo B\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-10 primeira",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61092,\n    \"nome\": \"QA IDs Novos\",\n    \"email\": \"ids@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71092,\n    \"nome\": \"QA Grupo IDs Novos\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-11 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_invalid_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: REPROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"categoria\": \"Valid\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61001,\n    \"nome\": \"NAO DEVE ATUALIZAR\",\n    \"email\": \"a@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71001,\n    \"nome\": \"NAO DEVE ATUALIZAR\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RF10-12 principal",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/chamados",
+        "header": [
+          {
+            "key": "X-Api-Key",
+            "value": "{{qa_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "description": "Criar/atualizar entidades corretas, preservar IDs e nao duplicar. Resultado historico: APROVADO. Collection exportada, NAO executada no Postman.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"QA\",\n  \"descricao\": \"Descricao QA v3\",\n  \"mensagemInicial\": \"Descricao QA v3\",\n  \"titulo\": \"QA v3\",\n  \"usuario\": {\n    \"id\": 61093,\n    \"nome\": \"QA Validacao Nova\",\n    \"email\": \"validacao@qa.example.invalid\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": 71093,\n    \"nome\": \"QA Grupo Validacao\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ]
+}

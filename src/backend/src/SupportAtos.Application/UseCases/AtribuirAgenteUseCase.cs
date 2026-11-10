@@ -7,7 +7,10 @@ using SupportAtos.Domain.Enums;
 
 namespace SupportAtos.Application.UseCases;
 
-/// <summary>Fila com atribuição manual (agenteId) ou automática (menor carga).</summary>
+/// <summary>
+/// Atribuição de chamados: supervisor/administrador pode atribuir a qualquer agente,
+/// usar atribuição automática ou desatribuir. O agente só pode atribuir o chamado a si mesmo.
+/// </summary>
 public class AtribuirAgenteUseCase
 {
     private readonly ICurrentUser _currentUser;
@@ -32,11 +35,49 @@ public class AtribuirAgenteUseCase
         var usuarioAtual = _currentUser.UsuarioAtual;
         if (usuarioAtual.Papel == PapelUsuario.Cliente)
         {
-            throw new ForbiddenException("Apenas a equipe de suporte pode atribuir agentes.");
+            throw new ForbiddenException("Apenas a equipe de suporte pode atribuir chamados.");
+        }
+
+        var ehGestor = usuarioAtual.Papel is PapelUsuario.Supervisor or PapelUsuario.Admin;
+
+        if (!ehGestor)
+        {
+            if (input.Desatribuir)
+            {
+                throw new ForbiddenException("Apenas supervisor ou administrador pode desatribuir chamados.");
+            }
+
+            if (input.Automatico)
+            {
+                throw new ForbiddenException("Apenas supervisor ou administrador pode usar atribuição automática.");
+            }
+
+            if (!input.AgenteId.HasValue)
+            {
+                throw new ValidationException("Informe o agente para atribuição.");
+            }
+
+            if (input.AgenteId.Value != usuarioAtual.UsuarioIdInterno)
+            {
+                throw new ForbiddenException("Agente só pode atribuir chamados a si mesmo.");
+            }
         }
 
         var chamado = await _chamadoRepository.GetByCodigoPublicoAsync(codigoPublico, cancellationToken)
             ?? throw new NotFoundException($"Chamado '{codigoPublico}' não encontrado.");
+
+        if (input.Desatribuir)
+        {
+            if (input.Automatico || input.AgenteId.HasValue)
+            {
+                throw new ValidationException("A desatribuição não pode ser combinada com agente ou atribuição automática.");
+            }
+
+            chamado.AtribuirAgente(null, DateTime.UtcNow);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return DtoMapper.ToDto(chamado);
+        }
 
         int? agenteId = input.AgenteId;
 
@@ -44,7 +85,7 @@ public class AtribuirAgenteUseCase
         {
             if (!input.Automatico && !agenteId.HasValue)
             {
-                throw new ValidationException("Informe o agente ou use atribuição automática.");
+                throw new ValidationException("Informe o agente, use atribuição automática ou solicite a desatribuição.");
             }
 
             agenteId = await EscolherAgenteComMenorCargaAsync(cancellationToken)
@@ -59,6 +100,14 @@ public class AtribuirAgenteUseCase
             {
                 throw new ValidationException("O usuário atribuído precisa ser da equipe (agente, supervisor ou admin).");
             }
+        }
+
+        if (!ehGestor
+            && chamado.AgenteId.HasValue
+            && chamado.AgenteId != usuarioAtual.UsuarioIdInterno)
+        {
+            throw new ForbiddenException(
+                "O chamado já está atribuído a outro agente. Peça ao supervisor para reatribuí-lo.");
         }
 
         chamado.AtribuirAgente(agenteId, DateTime.UtcNow);

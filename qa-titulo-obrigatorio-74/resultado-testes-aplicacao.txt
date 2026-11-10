@@ -1,0 +1,75 @@
+﻿  Determinando os projetos a serem restaurados...
+  Todos os projetos est├úo atualizados para restaura├º├úo.
+  SupportAtos.Domain -> C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\src\SupportAtos.Domain\bin\Debug\net10.0\SupportAtos.Domain.dll
+  SupportAtos.Application -> C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\src\SupportAtos.Application\bin\Debug\net10.0\SupportAtos.Application.dll
+  SupportAtos.Application.Tests -> C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Application.Tests\bin\Debug\net10.0\SupportAtos.Application.Tests.dll
+Execu├º├úo de teste para C:\Users\batll\OneDrive\Desktop\Nova pasta %283%29\system-atos-squad74\src\backend\tests\SupportAtos.Application.Tests\bin\Debug\net10.0\SupportAtos.Application.Tests.dll (.NETCoreApp,Version=v10.0)
+1 arquivos de teste no total corresponderam ao padr├úo especificado.
+dotnet : [xUnit.net 00:00:00.25]     
+SupportAtos.Application.Tests.CriarChamadoUseCaseTests.Handle_SemTitulo_DeveLancarValidationException(titulo: null) 
+[FAIL]
+No linha:1 caractere:1
++ dotnet test src\backend\tests\SupportAtos.Application.Tests\SupportAt ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([xUnit.net 00:0...o: null) [FAIL]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[xUnit.net 00:00:00.26]     
+SupportAtos.Application.Tests.ChamadoDomainTests.Criar_SemTitulo_DeveLancarDomainException(titulo: "") [FAIL]
+  Com falha SupportAtos.Application.Tests.CriarChamadoUseCaseTests.Handle_SemTitulo_DeveLancarValidationException(titulo: null) [7 ms]
+  Mensagem de erro:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(SupportAtos.Application.Exceptions.ValidationException)
+  Rastreamento de pilha:
+     at SupportAtos.Application.Tests.CriarChamadoUseCaseTests.Handle_SemTitulo_DeveLancarValidationException(String titulo) in C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Application.Tests\CriarChamadoUseCaseTests.cs:line 77
+--- End of stack trace from previous location ---
+  Com falha SupportAtos.Application.Tests.ChamadoDomainTests.Criar_SemTitulo_DeveLancarDomainException(titulo: "") [1 ms]
+  Mensagem de erro:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(SupportAtos.Domain.Exceptions.DomainException)
+  Rastreamento de pilha:
+     at SupportAtos.Application.Tests.ChamadoDomainTests.Criar_SemTitulo_DeveLancarDomainException(String titulo) in C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Application.Tests\ChamadoDomainTests.cs:line 98
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.26]     
+SupportAtos.Application.Tests.ChamadoDomainTests.Criar_SemTitulo_DeveLancarDomainException(titulo: null) [FAIL]
+[xUnit.net 00:00:00.26]     
+SupportAtos.Application.Tests.CriarChamadoUseCaseTests.Handle_SemTitulo_DeveLancarValidationException(titulo: "") 
+[FAIL]
+[xUnit.net 00:00:00.26]     
+SupportAtos.Application.Tests.ChamadoDomainTests.Criar_SemTitulo_DeveLancarDomainException(titulo: "   ") [FAIL]
+[xUnit.net 00:00:00.26]     
+SupportAtos.Application.Tests.CriarChamadoUseCaseTests.Handle_SemTitulo_DeveLancarValidationException(titulo: "   ") 
+[FAIL]
+  Com falha SupportAtos.Application.Tests.ChamadoDomainTests.Criar_SemTitulo_DeveLancarDomainException(titulo: null) [< 1 ms]
+  Mensagem de erro:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(SupportAtos.Domain.Exceptions.DomainException)
+  Rastreamento de pilha:
+     at SupportAtos.Application.Tests.ChamadoDomainTests.Criar_SemTitulo_DeveLancarDomainException(String titulo) in C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Application.Tests\ChamadoDomainTests.cs:line 98
+   at InvokeStub_ChamadoDomainTests.Criar_SemTitulo_DeveLancarDomainException(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Com falha SupportAtos.Application.Tests.CriarChamadoUseCaseTests.Handle_SemTitulo_DeveLancarValidationException(titulo: "") [< 1 ms]
+  Mensagem de erro:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(SupportAtos.Application.Exceptions.ValidationException)
+  Rastreamento de pilha:
+     at SupportAtos.Application.Tests.CriarChamadoUseCaseTests.Handle_SemTitulo_DeveLancarValidationException(String titulo) in C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Application.Tests\CriarChamadoUseCaseTests.cs:line 77
+--- End of stack trace from previous location ---
+  Com falha SupportAtos.Application.Tests.ChamadoDomainTests.Criar_SemTitulo_DeveLancarDomainException(titulo: "   ") [< 1 ms]
+  Mensagem de erro:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(SupportAtos.Domain.Exceptions.DomainException)
+  Rastreamento de pilha:
+     at SupportAtos.Application.Tests.ChamadoDomainTests.Criar_SemTitulo_DeveLancarDomainException(String titulo) in C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Application.Tests\ChamadoDomainTests.cs:line 98
+   at InvokeStub_ChamadoDomainTests.Criar_SemTitulo_DeveLancarDomainException(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Com falha SupportAtos.Application.Tests.CriarChamadoUseCaseTests.Handle_SemTitulo_DeveLancarValidationException(titulo: "   ") [< 1 ms]
+  Mensagem de erro:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(SupportAtos.Application.Exceptions.ValidationException)
+  Rastreamento de pilha:
+     at SupportAtos.Application.Tests.CriarChamadoUseCaseTests.Handle_SemTitulo_DeveLancarValidationException(String titulo) in C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Application.Tests\CriarChamadoUseCaseTests.cs:line 77
+--- End of stack trace from previous location ---
+
+Com falha! ÔÇô Com falha:     6, Aprovado:    28, Ignorado:     0, Total:    34, Dura├º├úo: 73 ms - SupportAtos.Application.Tests.dll (net10.0)

@@ -1,10 +1,9 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SupportAtos.Api.Authentication;
+using SupportAtos.Application.Abstractions;
 using SupportAtos.Application.DTOs;
 using SupportAtos.Application.UseCases;
-using SupportAtos.Application.Abstractions;
-using SupportAtos.Api.Authentication;
 
 namespace SupportAtos.Api.Controllers;
 
@@ -27,7 +26,7 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpGet("me")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "UsuarioPortal")]
+    [Authorize(Policy = AuthenticationSetup.PolicyJwt)]
     [ProducesResponseType(typeof(SessaoUsuarioDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult ConsultarSessao([FromServices] ICurrentUser currentUser)
@@ -41,20 +40,26 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+    [Authorize(Policy = AuthenticationSetup.PolicyEquipeAdmin)]
     [ProducesResponseType(typeof(UsuarioDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> CadastrarUsuario([FromBody] CadastrarUsuarioInput input, CancellationToken cancellationToken)
+    public async Task<IActionResult> CadastrarUsuario(
+        [FromBody] CadastrarUsuarioInput input,
+        CancellationToken cancellationToken)
     {
         var usuario = await _cadastrarUsuarioUseCase.Handle(input, cancellationToken);
         return CreatedAtAction(nameof(ConsultarUsuario), new { id = usuario.Id }, usuario);
     }
 
     [HttpGet("{id:int}")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Supervisor,Agente")]
+    [Authorize(Policy = AuthenticationSetup.PolicyEquipe)]
     [ProducesResponseType(typeof(UsuarioDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ConsultarUsuario(int id, CancellationToken cancellationToken)
     {
@@ -63,9 +68,13 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Supervisor,Agente")]
+    [Authorize(Policy = AuthenticationSetup.PolicyEquipe)]
     [ProducesResponseType(typeof(IReadOnlyList<UsuarioDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ListarUsuariosPorGrupo([FromQuery] int grupoEmpresaId, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> ListarUsuariosPorGrupo(
+        [FromQuery] int grupoEmpresaId,
+        CancellationToken cancellationToken)
     {
         var usuarios = await _listarUsuariosPorGrupoUseCase.Handle(grupoEmpresaId, cancellationToken);
         return Ok(usuarios);

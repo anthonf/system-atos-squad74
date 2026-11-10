@@ -6,4 +6,6 @@ namespace SupportAtos.Application.Ports;
 public interface IUserProvisioningService
 {
     Task<ProvisioningResult> ProvisionAsync(PortalUserContext usuario, CancellationToken cancellationToken = default);
+
+    Task<ProvisioningResult> ProvisionPortalAsync(PortalUserContext usuario, CancellationToken cancellationToken = default);
 }

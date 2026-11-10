@@ -1,0 +1,13 @@
+{
+  "api": {
+    "pid": 13016,
+    "exit_code": 1,
+    "terminated": true
+  },
+  "container": {
+    "id": "19fed0ac626399869a9efcab3ee95ad165ba433b85b258325d8c8b5ed05b3faf",
+    "name": "qa-v3-138ddc9400",
+    "owned_label_verified": true,
+    "removed": true
+  }
+}

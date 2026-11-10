@@ -49,6 +49,7 @@ export const isOpenTicket = (t) => !['resolvido', 'fechado'].includes(t.status);
 export const isAtRisk = (t) => t.slaRestante / t.slaTotal < 0.2 && isOpenTicket(t);
 
 export function SlaBar({ ticket }) {
+  const { atos } = useTheme();
   const pct = Math.max(0, Math.min(100, (ticket.slaRestante / ticket.slaTotal) * 100));
   const risk = isAtRisk(ticket);
   const done = !isOpenTicket(ticket);
@@ -60,7 +61,7 @@ export function SlaBar({ ticket }) {
         <Typography variant="caption" sx={{ fontWeight: 500, color: 'text.secondary' }}>Prazo de SLA</Typography>
         <Typography sx={{ fontFamily: MONO, fontSize: 12, fontWeight: 500, color: risk ? 'error.main' : 'text.secondary' }}>{label}</Typography>
       </Stack>
-      <LinearProgress variant="determinate" value={pct} color={color} sx={{ height: 6, borderRadius: 3, bgcolor: 'divider', color: 'text.disabled' }} />
+      <LinearProgress variant="determinate" value={pct} color={color} sx={{ height: 6, borderRadius: 3, bgcolor: atos.borderDefault, color: 'text.disabled' }} />
       {risk && (
         <Stack direction="row" alignItems="center" spacing={0.5} mt={1} sx={{ color: 'error.main' }}>
           <WarningAmberRounded sx={{ fontSize: 14 }} />

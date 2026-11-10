@@ -1,0 +1,18 @@
+{
+  "claims": {
+    "sub": "qa-jwt-only",
+    "name": "QA JWT",
+    "email": "jwt@qa.example.invalid",
+    "grupo_empresa_id": "qa-jwt-group",
+    "grupo_empresa_nome": "QA JWT Group",
+    "role": "Cliente",
+    "iss": "qa-v3",
+    "aud": "qa-v3",
+    "nbf": 1793717113,
+    "iat": 1793717173,
+    "exp": 1793720773
+  },
+  "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvBbPGXSR8v0jMnqKqLZG\nZnvavA4RYcEt3da/7BUiS9J4j+g4iu0669bj0BYwknIBUe8ZL53nldm4kaokfwwE\n+mkkKNy9ZiyydsHO7+3J8mFfe29Q9w7T8A0vIszy4iBuK192iJFamEl7ZpIlZGUM\nSa8MruizWBAx/D2DFjtWWbiDU2lyPHfmezEoZJlMXe4P/26qQl/XhCxNGtWcop95\nIX2vXRf9O7H1ItVXxAbURRJkJrEEXn8d8uT98a6fdcNz5eknFSqcQ67KQBlVRTgU\nrMtqPHBm+2IwqIhQUUOKzuMIbvTfp6OxZbD9YtWyvE51uvdLCJHTiHYF8nGNiSAz\nawIDAQAB\n-----END PUBLIC KEY-----\n",
+  "signature_locally_verified": true,
+  "used_only_for_negative_auth_tests": true
+}

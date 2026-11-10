@@ -33,7 +33,8 @@ public class TestWebAppFactory : WebApplicationFactory<Program>
         builder.UseSetting("Sso:Issuer", TestTokenFactory.Issuer);
         builder.UseSetting("Sso:Audience", TestTokenFactory.Audience);
         builder.UseSetting("Sso:PublicKeyPem", TestTokenFactory.ChavePublicaPem);
-        builder.UseSetting("Sso:ApiKey", TestTokenFactory.ApiKey);
+        builder.UseSetting("ApiKeys:Portal:PrimaryHash", TestTokenFactory.PortalApiKeyHash);
+        builder.UseSetting("ApiKeys:Automacao:PrimaryHash", TestTokenFactory.AutomacaoApiKeyHash);
     }
 
     protected override IHost CreateHost(IHostBuilder builder)

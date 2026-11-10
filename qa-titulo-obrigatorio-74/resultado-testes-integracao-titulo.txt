@@ -1,0 +1,61 @@
+﻿  Determinando os projetos a serem restaurados...
+  Todos os projetos est├úo atualizados para restaura├º├úo.
+  SupportAtos.Domain -> C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\src\SupportAtos.Domain\bin\Debug\net10.0\SupportAtos.Domain.dll
+  SupportAtos.Application -> C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\src\SupportAtos.Application\bin\Debug\net10.0\SupportAtos.Application.dll
+  SupportAtos.Infrastructure -> C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\src\SupportAtos.Infrastructure\bin\Debug\net10.0\SupportAtos.Infrastructure.dll
+  SupportAtos.Api -> C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\src\SupportAtos.Api\bin\Debug\net10.0\SupportAtos.Api.dll
+  SupportAtos.Integration.Tests -> C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Integration.Tests\bin\Debug\net10.0\SupportAtos.Integration.Tests.dll
+Execu├º├úo de teste para C:\Users\batll\OneDrive\Desktop\Nova pasta %283%29\system-atos-squad74\src\backend\tests\SupportAtos.Integration.Tests\bin\Debug\net10.0\SupportAtos.Integration.Tests.dll (.NETCoreApp,Version=v10.0)
+1 arquivos de teste no total corresponderam ao padr├úo especificado.
+dotnet : [xUnit.net 00:00:02.05]     
+SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(incluirTitulo: True, titulo: 
+"   ") [FAIL]
+No linha:1 caractere:1
++ dotnet test src\backend\tests\SupportAtos.Integration.Tests\SupportAt ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([xUnit.net 00:0...: "   ") [FAIL]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[xUnit.net 00:00:02.10]     
+SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(incluirTitulo: True, titulo: 
+null) [FAIL]
+[xUnit.net 00:00:02.12]     
+SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(incluirTitulo: True, titulo: 
+"") [FAIL]
+[xUnit.net 00:00:02.13]     
+SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(incluirTitulo: False, titulo: 
+null) [FAIL]
+  Com falha SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(incluirTitulo: True, titulo: "   ") [1 s]
+  Mensagem de erro:
+   Assert.Equal() Failure: Values differ
+Expected: BadRequest
+Actual:   Created
+  Rastreamento de pilha:
+     at SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(Boolean incluirTitulo, String titulo) in C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Integration.Tests\SupportAtosApiTests.cs:line 139
+--- End of stack trace from previous location ---
+  Com falha SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(incluirTitulo: True, titulo: null) [57 ms]
+  Mensagem de erro:
+   Assert.Equal() Failure: Values differ
+Expected: BadRequest
+Actual:   Created
+  Rastreamento de pilha:
+     at SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(Boolean incluirTitulo, String titulo) in C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Integration.Tests\SupportAtosApiTests.cs:line 139
+--- End of stack trace from previous location ---
+  Com falha SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(incluirTitulo: True, titulo: "") [14 ms]
+  Mensagem de erro:
+   Assert.Equal() Failure: Values differ
+Expected: BadRequest
+Actual:   Created
+  Rastreamento de pilha:
+     at SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(Boolean incluirTitulo, String titulo) in C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Integration.Tests\SupportAtosApiTests.cs:line 139
+--- End of stack trace from previous location ---
+  Com falha SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(incluirTitulo: False, titulo: null) [7 ms]
+  Mensagem de erro:
+   Assert.Equal() Failure: Values differ
+Expected: BadRequest
+Actual:   Created
+  Rastreamento de pilha:
+     at SupportAtos.Integration.Tests.SupportAtosApiTests.CriarChamado_SemTitulo_DeveRetornar400(Boolean incluirTitulo, String titulo) in C:\Users\batll\OneDrive\Desktop\Nova pasta (3)\system-atos-squad74\src\backend\tests\SupportAtos.Integration.Tests\SupportAtosApiTests.cs:line 139
+--- End of stack trace from previous location ---
+
+Com falha! ÔÇô Com falha:     4, Aprovado:     1, Ignorado:     0, Total:     5, Dura├º├úo: 1 s - SupportAtos.Integration.Tests.dll (net10.0)

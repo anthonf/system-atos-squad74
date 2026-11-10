@@ -13,15 +13,18 @@ public class ResponderChamadoUseCase
     private readonly ICurrentUser _currentUser;
     private readonly IChamadoRepository _chamadoRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IWebhookDispatcher _webhook;
 
     public ResponderChamadoUseCase(
         ICurrentUser currentUser,
         IChamadoRepository chamadoRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IWebhookDispatcher webhook)
     {
         _currentUser = currentUser;
         _chamadoRepository = chamadoRepository;
         _unitOfWork = unitOfWork;
+        _webhook = webhook;
     }
 
     public async Task<InteracaoDto> Handle(string codigoPublico, ResponderChamadoInput input, CancellationToken cancellationToken = default)
@@ -63,6 +66,7 @@ public class ResponderChamadoUseCase
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _webhook.EnviarAsync(WebhookEvent.De(chamado, WebhookEvent.EventoAtualizado), cancellationToken);
 
         return DtoMapper.ToDto(interacao);
     }

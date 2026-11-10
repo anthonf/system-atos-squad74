@@ -1,3 +1,6 @@
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 using Microsoft.AspNetCore.Mvc;
 using SupportAtos.Application.Exceptions;
 using SupportAtos.Domain.Exceptions;
@@ -6,6 +9,11 @@ namespace SupportAtos.Api.Middleware;
 
 public class ExceptionHandlingMiddleware
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+    };
+
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
@@ -36,6 +44,8 @@ public class ExceptionHandlingMiddleware
             ForbiddenException ex => (StatusCodes.Status403Forbidden, ToProblemDetails(StatusCodes.Status403Forbidden, "Acesso negado", new[] { ex.Message })),
             NotFoundException ex => (StatusCodes.Status404NotFound, ToProblemDetails(StatusCodes.Status404NotFound, "Não encontrado", new[] { ex.Message })),
             ConflictException ex => (StatusCodes.Status409Conflict, ToProblemDetails(StatusCodes.Status409Conflict, "Conflito", new[] { ex.Message })),
+            BadHttpRequestException ex => (ex.StatusCode, ToProblemDetails(ex.StatusCode, "Requisição inválida", new[] { ex.Message })),
+            JsonException ex => (StatusCodes.Status400BadRequest, ToProblemDetails(StatusCodes.Status400BadRequest, "Requisição inválida", new[] { ex.Message })),
             _ => HandleUnexpected(context, exception)
         };
         (int, ProblemDetails) HandleUnexpected(HttpContext ctx, Exception ex)
@@ -47,7 +57,7 @@ public class ExceptionHandlingMiddleware
 
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/problem+json";
-        await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(problemDetails));
+        await context.Response.WriteAsync(JsonSerializer.Serialize(problemDetails, JsonOptions));
     }
 
     private static ProblemDetails ToProblemDetails(int statusCode, string title, IEnumerable<string> errors)

@@ -1,0 +1,9 @@
+{
+  "api_pid": 13016,
+  "base_url": "http://127.0.0.1:19053",
+  "environment": "Production",
+  "database": "qa_v3_138ddc9400",
+  "role": "qa_v3",
+  "auth_credentials": "Aleatorias, apenas em memoria e variaveis dos processos; nenhuma em arquivos.",
+  "git_head": "97baa8c604a1d69d5636d3577d280ce89078a213"
+}

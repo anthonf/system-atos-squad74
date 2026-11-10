@@ -1,0 +1,294 @@
+{
+  "info": {
+    "name": "RF10 - Sincronizacao de usuario e grupo (Squad 74)",
+    "description": "Collection do RF10 com os 4 cenarios do Termo v3 (secao 6.2): (1) usuario e grupo novos; (2) usuario ja existente sem duplicar; (3) usuario novo em grupo existente; (4) sem API Key ou chave invalida (401). Rode na ordem: os cenarios 2 e 3 reaproveitam o usuario e o grupo criados no cenario 1. Defina base_url e api_key em Variables. NAO salve a chave real no repositorio.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5177" },
+    { "key": "api_key", "value": "COLE_AQUI_A_CHAVE_NA_SUA_MAQUINA" },
+    { "key": "api_key_invalida", "value": "chave-invalida-123" }
+  ],
+  "item": [
+    {
+      "name": "1 - Usuario e grupo novos",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const sufixo = Math.floor(Math.random() * 900000) + 100000;",
+              "pm.collectionVariables.set('usuario_id', sufixo);",
+              "pm.collectionVariables.set('usuario_nome', 'Usuario RF10 ' + sufixo);",
+              "pm.collectionVariables.set('usuario_email', 'usuario' + sufixo + '@portal.example.com');",
+              "pm.collectionVariables.set('grupo_id', sufixo + 1000000);",
+              "pm.collectionVariables.set('grupo_nome', 'Grupo RF10 ' + sufixo);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201 Created', function () { pm.response.to.have.status(201); });",
+              "const json = pm.response.json();",
+              "pm.test('Chamado criado com codigo publico', function () { pm.expect(json.codigoPublico).to.be.a('string'); });",
+              "pm.test('Chamado vinculado ao usuario com o id do portal', function () { pm.expect(json.usuarioId).to.eql(Number(pm.collectionVariables.get('usuario_id'))); });",
+              "pm.test('Chamado vinculado ao grupo com o id do portal', function () { pm.expect(json.grupoEmpresaId).to.eql(Number(pm.collectionVariables.get('grupo_id'))); });",
+              "pm.sendRequest({",
+              "  url: pm.variables.get('base_url') + '/api/usuarios?grupoEmpresaId=' + pm.collectionVariables.get('grupo_id'),",
+              "  method: 'GET',",
+              "  header: { 'X-Api-Key': pm.variables.get('api_key') }",
+              "}, function (err, res) {",
+              "  pm.test('Usuario novo existe no grupo novo (1 registro)', function () {",
+              "    pm.expect(err).to.be.null;",
+              "    const email = pm.collectionVariables.get('usuario_email');",
+              "    pm.expect(res.json().filter(function (u) { return u.email === email; }).length).to.eql(1);",
+              "  });",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-Api-Key", "value": "{{api_key}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"Portal\",\n  \"categoria\": \"Login\",\n  \"titulo\": \"Teste RF10 - usuario e grupo novos\",\n  \"descricao\": \"Cenario 1: usuario e grupo novos.\",\n  \"mensagemInicial\": \"Cenario 1: usuario e grupo novos.\",\n  \"usuario\": {\n    \"id\": {{usuario_id}},\n    \"nome\": \"{{usuario_nome}}\",\n    \"email\": \"{{usuario_email}}\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": {{grupo_id}},\n    \"nome\": \"{{grupo_nome}}\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/chamados",
+          "host": ["{{base_url}}"],
+          "path": ["api", "chamados"]
+        }
+      }
+    },
+    {
+      "name": "2 - Usuario ja existente (sem duplicar)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201 Created', function () { pm.response.to.have.status(201); });",
+              "const json = pm.response.json();",
+              "pm.test('Chamado vinculado ao mesmo usuario do portal', function () { pm.expect(json.usuarioId).to.eql(Number(pm.collectionVariables.get('usuario_id'))); });",
+              "pm.test('Chamado vinculado ao mesmo grupo do portal', function () { pm.expect(json.grupoEmpresaId).to.eql(Number(pm.collectionVariables.get('grupo_id'))); });",
+              "pm.sendRequest({",
+              "  url: pm.variables.get('base_url') + '/api/usuarios?grupoEmpresaId=' + pm.collectionVariables.get('grupo_id'),",
+              "  method: 'GET',",
+              "  header: { 'X-Api-Key': pm.variables.get('api_key') }",
+              "}, function (err, res) {",
+              "  pm.test('Usuario NAO foi duplicado (continua 1 registro)', function () {",
+              "    pm.expect(err).to.be.null;",
+              "    const email = pm.collectionVariables.get('usuario_email');",
+              "    pm.expect(res.json().filter(function (u) { return u.email === email; }).length).to.eql(1);",
+              "  });",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-Api-Key", "value": "{{api_key}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"Portal\",\n  \"categoria\": \"Login\",\n  \"titulo\": \"Teste RF10 - usuario ja existente\",\n  \"descricao\": \"Cenario 2: mesma identidade do cenario 1, nao pode duplicar.\",\n  \"mensagemInicial\": \"Cenario 2: mesma identidade do cenario 1, nao pode duplicar.\",\n  \"usuario\": {\n    \"id\": {{usuario_id}},\n    \"nome\": \"{{usuario_nome}}\",\n    \"email\": \"{{usuario_email}}\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": {{grupo_id}},\n    \"nome\": \"{{grupo_nome}}\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/chamados",
+          "host": ["{{base_url}}"],
+          "path": ["api", "chamados"]
+        }
+      }
+    },
+    {
+      "name": "3 - Usuario novo em grupo existente",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const sufixo = Math.floor(Math.random() * 900000) + 100000;",
+              "pm.collectionVariables.set('usuario2_id', sufixo + 2000000);",
+              "pm.collectionVariables.set('usuario2_nome', 'Usuario RF10 B ' + sufixo);",
+              "pm.collectionVariables.set('usuario2_email', 'usuariob' + sufixo + '@portal.example.com');"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201 Created', function () { pm.response.to.have.status(201); });",
+              "const json = pm.response.json();",
+              "pm.test('Chamado vinculado ao novo usuario com o id do portal', function () { pm.expect(json.usuarioId).to.eql(Number(pm.collectionVariables.get('usuario2_id'))); });",
+              "pm.test('Chamado vinculado ao grupo que ja existia', function () { pm.expect(json.grupoEmpresaId).to.eql(Number(pm.collectionVariables.get('grupo_id'))); });",
+              "pm.sendRequest({",
+              "  url: pm.variables.get('base_url') + '/api/usuarios?grupoEmpresaId=' + pm.collectionVariables.get('grupo_id'),",
+              "  method: 'GET',",
+              "  header: { 'X-Api-Key': pm.variables.get('api_key') }",
+              "}, function (err, res) {",
+              "  pm.test('Grupo agora tem os 2 usuarios, cada um uma unica vez', function () {",
+              "    pm.expect(err).to.be.null;",
+              "    const lista = res.json();",
+              "    const email1 = pm.collectionVariables.get('usuario_email');",
+              "    const email2 = pm.collectionVariables.get('usuario2_email');",
+              "    pm.expect(lista.filter(function (u) { return u.email === email1; }).length).to.eql(1);",
+              "    pm.expect(lista.filter(function (u) { return u.email === email2; }).length).to.eql(1);",
+              "  });",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-Api-Key", "value": "{{api_key}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"produto\": \"Portal\",\n  \"categoria\": \"Login\",\n  \"titulo\": \"Teste RF10 - usuario novo em grupo existente\",\n  \"descricao\": \"Cenario 3: usuario novo no grupo criado no cenario 1.\",\n  \"mensagemInicial\": \"Cenario 3: usuario novo no grupo criado no cenario 1.\",\n  \"usuario\": {\n    \"id\": {{usuario2_id}},\n    \"nome\": \"{{usuario2_nome}}\",\n    \"email\": \"{{usuario2_email}}\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": {{grupo_id}},\n    \"nome\": \"{{grupo_nome}}\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/chamados",
+          "host": ["{{base_url}}"],
+          "path": ["api", "chamados"]
+        }
+      }
+    },
+    {
+      "name": "4 - Sem API Key ou chave invalida (401)",
+      "item": [
+        {
+          "name": "4a - Sem API Key",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const sufixo = Math.floor(Math.random() * 900000) + 100000;",
+                  "pm.collectionVariables.set('nao_auth_usuario_id', sufixo + 3000000);",
+                  "pm.collectionVariables.set('nao_auth_usuario_email', 'naoauth' + sufixo + '@portal.example.com');",
+                  "pm.collectionVariables.set('nao_auth_grupo_id', sufixo + 4000000);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401 Unauthorized', function () { pm.response.to.have.status(401); });",
+                  "pm.test('Nao devolveu chamado (nada foi criado)', function () {",
+                  "  let corpo = {};",
+                  "  try { corpo = pm.response.json(); } catch (e) { corpo = {}; }",
+                  "  pm.expect(corpo.codigoPublico).to.be.undefined;",
+                  "});",
+                  "pm.sendRequest({",
+                  "  url: pm.variables.get('base_url') + '/api/usuarios?grupoEmpresaId=' + pm.collectionVariables.get('nao_auth_grupo_id'),",
+                  "  method: 'GET',",
+                  "  header: { 'X-Api-Key': pm.variables.get('api_key') }",
+                  "}, function (err, res) {",
+                  "  pm.test('Usuario e grupo NAO foram criados', function () {",
+                  "    pm.expect(err).to.be.null;",
+                  "    pm.expect(res.json().length).to.eql(0);",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"produto\": \"Portal\",\n  \"categoria\": \"Login\",\n  \"titulo\": \"Teste RF10 - sem API Key\",\n  \"descricao\": \"Cenario 4a: requisicao sem header X-Api-Key.\",\n  \"mensagemInicial\": \"Cenario 4a: requisicao sem header X-Api-Key.\",\n  \"usuario\": {\n    \"id\": {{nao_auth_usuario_id}},\n    \"nome\": \"Usuario Nao Autorizado\",\n    \"email\": \"{{nao_auth_usuario_email}}\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": {{nao_auth_grupo_id}},\n    \"nome\": \"Grupo Nao Autorizado\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/chamados",
+              "host": ["{{base_url}}"],
+              "path": ["api", "chamados"]
+            }
+          }
+        },
+        {
+          "name": "4b - Chave invalida",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const sufixo = Math.floor(Math.random() * 900000) + 100000;",
+                  "pm.collectionVariables.set('nao_auth_usuario_id', sufixo + 5000000);",
+                  "pm.collectionVariables.set('nao_auth_usuario_email', 'naoauth' + sufixo + '@portal.example.com');",
+                  "pm.collectionVariables.set('nao_auth_grupo_id', sufixo + 6000000);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401 Unauthorized', function () { pm.response.to.have.status(401); });",
+                  "pm.test('Nao devolveu chamado (nada foi criado)', function () {",
+                  "  let corpo = {};",
+                  "  try { corpo = pm.response.json(); } catch (e) { corpo = {}; }",
+                  "  pm.expect(corpo.codigoPublico).to.be.undefined;",
+                  "});",
+                  "pm.sendRequest({",
+                  "  url: pm.variables.get('base_url') + '/api/usuarios?grupoEmpresaId=' + pm.collectionVariables.get('nao_auth_grupo_id'),",
+                  "  method: 'GET',",
+                  "  header: { 'X-Api-Key': pm.variables.get('api_key') }",
+                  "}, function (err, res) {",
+                  "  pm.test('Usuario e grupo NAO foram criados', function () {",
+                  "    pm.expect(err).to.be.null;",
+                  "    pm.expect(res.json().length).to.eql(0);",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Api-Key", "value": "{{api_key_invalida}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"produto\": \"Portal\",\n  \"categoria\": \"Login\",\n  \"titulo\": \"Teste RF10 - chave invalida\",\n  \"descricao\": \"Cenario 4b: requisicao com X-Api-Key invalida.\",\n  \"mensagemInicial\": \"Cenario 4b: requisicao com X-Api-Key invalida.\",\n  \"usuario\": {\n    \"id\": {{nao_auth_usuario_id}},\n    \"nome\": \"Usuario Nao Autorizado\",\n    \"email\": \"{{nao_auth_usuario_email}}\"\n  },\n  \"grupoEmpresa\": {\n    \"id\": {{nao_auth_grupo_id}},\n    \"nome\": \"Grupo Nao Autorizado\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/chamados",
+              "host": ["{{base_url}}"],
+              "path": ["api", "chamados"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

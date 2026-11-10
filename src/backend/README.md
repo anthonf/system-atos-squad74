@@ -10,7 +10,6 @@ Stack: **C# / .NET 10**, **Clean Architecture**, **EF Core 10** + **PostgreSQL**
 
 - [.NET SDK 10](https://dotnet.microsoft.com/download)
 - PostgreSQL rodando (nativo na `5432` **ou** Docker na `5433` — escolha um, ver passo 1)
-- Node 20+ (só se for rodar o frontend junto)
 - Tool do EF Core (uma vez só):
   ```bash
   dotnet tool install --global dotnet-ef
@@ -69,7 +68,7 @@ Aqui tem um detalhe: em máquina com OneDrive + política de aplicativos, o `dot
 
 ```powershell
 $env:ASPNETCORE_ENVIRONMENT = "Development"
-# Obrigatório rodando pela DLL: ela ignora o launchSettings e sem isso sobe na porta 5000 (o frontend espera a 5177)
+# Obrigatório rodando pela DLL: ela ignora o launchSettings e sem isso sobe na porta 5000
 $env:ASPNETCORE_URLS = "http://localhost:5177"
 Set-Location -LiteralPath "src\SupportAtos.Api\bin\Debug\net10.0"
 dotnet SupportAtos.Api.dll
@@ -101,17 +100,15 @@ $env:ASPNETCORE_URLS = "http://localhost:5177"
 Set-Location -LiteralPath "src\SupportAtos.Api\bin\Debug\net10.0"
 dotnet SupportAtos.Api.dll
 
-# Janela 2 — token novo (só se o de ontem expirou; padrão 60 min) + frontend
+# Janela 2 — token novo (só se o de ontem expirou; padrão 60 min)
 Set-Location -LiteralPath "<caminho>\src\backend"
 .\scripts\mint-token.ps1 -Sub portal-agente -Email agente@atos.com -Name "Agente" -GrupoId grupo-1 -GrupoNome "Grupo Norte"
-Set-Location -LiteralPath "<caminho>\src\frontend"
-npm run dev   # http://localhost:5173
 ```
 
 ### Se algo der errado (2 min)
 
-- Fila/Dashboard com "Erro interno do servidor" → o backend não está na 5177. Confira `http://localhost:5177/health` (tem que dar `Healthy`); o proxy do frontend só fala com a 5177.
-- `401` no Swagger/front → token expirou (padrão 60 min, gere outro no passo 6) ou tem instância antiga rodando (mate os `dotnet` e suba de novo).
+- `/health` fora do ar ou com erro → o backend não está na 5177. Confira `http://localhost:5177/health` (tem que dar `Healthy`).
+- `401` no Swagger → token expirou (padrão 60 min, gere outro no passo 6) ou tem instância antiga rodando (mate os `dotnet` e suba de novo).
 - Backend nem sobe ("address already in use") → processo antigo segurando a porta; rode o `Stop-Process` da Janela 1 e tente de novo.
 
 ## O banco em 30 segundos
@@ -172,7 +169,7 @@ dotnet test tests/SupportAtos.Integration.Tests --filter FullyQualifiedName~Sess
 
 Esses testes não substituem os testes existentes do provisionamento real com PostgreSQL.
 
-- **JWT RS256 do portal** (`Authorization: Bearer <token>`): valida assinatura + `iss` + `aud` + validade. É o que o frontend e o Swagger usam.
+- **JWT RS256 do portal** (`Authorization: Bearer <token>`): valida assinatura + `iss` + `aud` + validade. É o que o Swagger usa.
 - **API Key** (`X-Api-Key`): só para máquina-a-máquina (ex.: n8n). Não abre rotas de usuário.
 - Token de dev: `.\scripts\mint-token.ps1` (usa a chave privada local em `tools/.../keys/`, que **nunca** vai para o git).
 

@@ -1,0 +1,26 @@
+{
+  "database": "qa_v3_138ddc9400",
+  "role": "qa_v3",
+  "__EFMigrationsHistory": [
+    {
+      "MigrationId": "20260915173343_InitialCreate",
+      "ProductVersion": "10.0.0"
+    },
+    {
+      "MigrationId": "20260919141706_AddPortalExternalId",
+      "ProductVersion": "10.0.0"
+    },
+    {
+      "MigrationId": "20260927195618_AlinharAoSqlOficial",
+      "ProductVersion": "10.0.0"
+    }
+  ],
+  "anexo": [],
+  "chamado": [],
+  "grupo_empresa": [],
+  "interacao": [],
+  "log_auditoria": [],
+  "provisionamento_audit": [],
+  "sla_config": [],
+  "usuario": []
+}

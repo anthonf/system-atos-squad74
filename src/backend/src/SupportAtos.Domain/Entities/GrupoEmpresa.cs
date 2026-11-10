@@ -65,4 +65,19 @@ public class GrupoEmpresa
 
         CodigoExterno = codigoExterno.Trim();
     }
+
+    public void DefinirIdPortal(int id)
+    {
+        if (id <= 0)
+        {
+            throw new Exceptions.DomainException("O ID do portal deve ser maior que zero.");
+        }
+
+        if (Id != 0 && Id != id)
+        {
+            throw new Exceptions.DomainException("O ID do grupo de empresa nao pode ser alterado.");
+        }
+
+        Id = id;
+    }
 }

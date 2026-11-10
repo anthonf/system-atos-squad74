@@ -4,7 +4,7 @@ import { Box, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableRow, Tex
 import { useTheme } from '@mui/material/styles';
 import { AccessTime, CheckCircleOutline, ConfirmationNumberOutlined } from '@mui/icons-material';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { CATEGORIES, PRODUCTS } from '../data';
+import { CATEGORIES, EMPRESAS, PRODUCTS } from '../data';
 import { Eyebrow, isAtRisk, StatTile } from './ui';
 import { FONT, MONO } from '../theme';
 
@@ -19,22 +19,16 @@ export default function Reports({ tickets, role, user }) {
   const emRisco = scoped.filter(isAtRisk);
   const tick = { fontSize: 11, fontFamily: FONT, fill: atos.textSecondary };
 
-  const empresasList = useMemo(() => {
-    const set = new Set();
-    tickets.forEach((t) => { if (t.empresa) set.add(t.empresa); });
-    return Array.from(set);
-  }, [tickets]);
-
   return (
     <Box sx={{ maxWidth: 1152 }}>
       <Eyebrow>Inteligência operacional</Eyebrow>
       <Typography variant="h1" sx={{ fontSize: 30 }}>Relatórios</Typography>
       <Typography color="text.secondary" mt={1} mb={3}>Panorama de chamados por produto, categoria e proximidade do SLA.</Typography>
 
-      {role === 'agente' && empresasList.length > 0 && (
+      {role === 'agente' && (
         <TextField select size="small" label="Grupo empresa" value={empresa} onChange={(e) => setEmpresa(e.target.value)} sx={{ minWidth: 240, mb: 2.5 }}>
           <MenuItem value="todas">Todos os grupos empresa</MenuItem>
-          {empresasList.map((e) => <MenuItem key={e} value={e}>{e}</MenuItem>)}
+          {EMPRESAS.map((e) => <MenuItem key={e} value={e}>{e}</MenuItem>)}
         </TextField>
       )}
 
@@ -53,8 +47,8 @@ export default function Reports({ tickets, role, user }) {
                 <CartesianGrid stroke={atos.borderSubtle} vertical={false} />
                 <XAxis dataKey="nome" tick={{ ...tick, fontSize: 10 }} interval={0} angle={-15} textAnchor="end" height={50} />
                 <YAxis tick={tick} allowDecimals={false} />
-                <Tooltip contentStyle={{ fontFamily: FONT, fontSize: 12, border: `1px solid ${atos.borderDefault}`, background: atos.surfaceBase, color: atos.textPrimary }} />
-                <Bar dataKey="total" fill={atos.brandPrimary} radius={[3, 3, 0, 0]} />
+                <Tooltip cursor={{ fill: atos.brandSoft }} contentStyle={{ fontFamily: FONT, fontSize: 12, border: `1px solid ${atos.borderDefault}`, background: atos.surfaceBase, color: atos.textPrimary }} />
+                <Bar dataKey="total" fill={atos.brandText} radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Box>

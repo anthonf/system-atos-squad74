@@ -40,7 +40,7 @@ function CustomerInsights({ tickets }) {
       <Paper variant="outlined" sx={{ p: 2.5 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
           <Box><Eyebrow>Visão geral</Eyebrow><Typography variant="h2">Chamados por status</Typography></Box>
-          <Box sx={{ width: 36, height: 36, display: 'grid', placeItems: 'center', borderRadius: 2, bgcolor: atos.errorBg, color: 'primary.main' }}><BarChartOutlined fontSize="small" /></Box>
+          <Box sx={{ width: 36, height: 36, display: 'grid', placeItems: 'center', borderRadius: 2, bgcolor: atos.brandSoft, color: 'primary.main' }}><BarChartOutlined fontSize="small" /></Box>
         </Stack>
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1.5, mt: 2.5 }}>
           {groups.map((g) => (
@@ -90,24 +90,21 @@ export function NewTicketModal({ user, onClose, onCreate }) {
 
   const submit = (e) => {
     e.preventDefault();
-    if (!categoria || !descricao.trim()) {
-      setError('Preencha categoria e descrição.');
+    if (!categoria || !assunto.trim() || !descricao.trim()) {
+      setError('Preencha categoria, assunto e descrição.');
       return;
     }
     setError('');
     setSubmitting(true);
-    try {
+    setTimeout(() => {
+      const id = `AC-2026-${String(Math.floor(215 + Math.random() * 700)).padStart(5, '0')}`;
       onCreate({
-        produto,
-        categoria,
-        mensagemInicial: descricao.trim(),
-        titulo: assunto.trim() || descricao.trim().slice(0, 80),
-        descricao: descricao.trim(),
+        id, empresa: user.empresa, contato: user.nome, produto, categoria, assunto: assunto.trim(),
+        prioridade: 'media', status: 'aberto', agente: null, slaTotal: 48, slaRestante: 48, abertura: 'agora',
+        mensagens: [{ autor: user.nome, tipo: 'cliente', data: 'agora', texto: descricao.trim() }],
+        notas: [],
       });
-    } catch (err) {
-      setError(err.message || 'Erro ao criar chamado');
-      setSubmitting(false);
-    }
+    }, 500);
   };
 
   return (
@@ -141,7 +138,7 @@ export function NewTicketModal({ user, onClose, onCreate }) {
   );
 }
 
-export default function TicketList({ tickets, role, user, onOpen, onNew, onShowNewTicket, onRefresh, apiError }) {
+export default function TicketList({ tickets, role, user, onOpen, onNew }) {
   const { atos } = useTheme();
   const [status, setStatus] = useState('todos');
   const [produto, setProduto] = useState('todos');
@@ -173,14 +170,7 @@ export default function TicketList({ tickets, role, user, onOpen, onNew, onShowN
     q && { key: 'q', label: `"${q}"`, clear: () => setQ('') },
   ].filter(Boolean);
 
-  const refresh = async () => {
-    setRefreshing(true);
-    try {
-      if (onRefresh) await onRefresh();
-    } finally {
-      setTimeout(() => setRefreshing(false), 400);
-    }
-  };
+  const refresh = () => { setRefreshing(true); setTimeout(() => setRefreshing(false), 500); };
   const head = { bgcolor: atos.tableHeaderBg, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: 'text.secondary' };
 
   return (
@@ -193,7 +183,7 @@ export default function TicketList({ tickets, role, user, onOpen, onNew, onShowN
             {isClient ? 'Acompanhe o andamento, o SLA e as atualizações dos seus chamados.' : 'Priorize os atendimentos pelo SLA e pela categoria do problema.'}
           </Typography>
         </Box>
-        {isClient && (onNew || onShowNewTicket) && <Button variant="contained" startIcon={<Add />} onClick={onNew || onShowNewTicket}>Abrir novo chamado</Button>}
+        {isClient && onNew && <Button variant="contained" startIcon={<Add />} onClick={onNew}>Abrir novo chamado</Button>}
       </Stack>
 
       <Box component="section" aria-label="Indicadores dos chamados" sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 1.5, mb: 3 }}>
@@ -239,12 +229,6 @@ export default function TicketList({ tickets, role, user, onOpen, onNew, onShowN
         </Stack>
       )}
 
-      {apiError && (
-        <Paper variant="outlined" sx={{ p: 2, mb: 2, bgcolor: 'error.lighter', borderColor: 'error.light' }}>
-          <Typography color="error.main" variant="body2">{apiError}</Typography>
-        </Paper>
-      )}
-
       {scoped.length === 0 || filtered.length === 0 ? (
         <Paper variant="outlined" sx={{ py: 8, textAlign: 'center' }}>
           {scoped.length === 0 ? <InboxOutlined sx={{ fontSize: 30, color: 'text.disabled' }} /> : <Search sx={{ fontSize: 28, color: 'text.disabled' }} />}
@@ -254,7 +238,7 @@ export default function TicketList({ tickets, role, user, onOpen, onNew, onShowN
           <Typography color="text.disabled" mt={0.5}>
             {scoped.length === 0 ? (isClient ? 'Quando precisar de ajuda, abra um chamado e acompanhe por aqui.' : 'Bom trabalho, tudo em dia.') : 'Tente buscar por outro número, empresa ou categoria.'}
           </Typography>
-          {scoped.length === 0 && isClient && (onNew || onShowNewTicket) && <Button variant="contained" startIcon={<Add />} onClick={onNew || onShowNewTicket} sx={{ mt: 2 }}>Abrir novo chamado</Button>}
+          {scoped.length === 0 && isClient && onNew && <Button variant="contained" startIcon={<Add />} onClick={onNew} sx={{ mt: 2 }}>Abrir novo chamado</Button>}
           {scoped.length > 0 && <Button variant="outlined" sx={{ mt: 2 }} onClick={() => { setStatus('todos'); setProduto('todos'); setQ(''); }}>Limpar filtros</Button>}
         </Paper>
       ) : (
@@ -276,7 +260,7 @@ export default function TicketList({ tickets, role, user, onOpen, onNew, onShowN
                 {visible.map((t, i) => (
                   <TableRow key={t.id} hover tabIndex={0} onClick={() => onOpen(t.id)} onKeyDown={(e) => { if (e.key === 'Enter') onOpen(t.id); }}
                     sx={{ cursor: 'pointer', bgcolor: i % 2 === 1 ? atos.tableRowAlt : 'background.paper', '& td': { py: 1.5 } }}>
-                    <TableCell sx={{ borderLeft: 3, borderLeftColor: isAtRisk(t) ? 'primary.main' : 'transparent', fontFamily: MONO, fontSize: 11, color: 'text.disabled', whiteSpace: 'nowrap' }}>{t.id}</TableCell>
+                    <TableCell sx={{ borderLeft: 3, borderLeftColor: isAtRisk(t) ? 'error.main' : 'transparent', fontFamily: MONO, fontSize: 11, color: 'text.disabled', whiteSpace: 'nowrap' }}>{t.id}</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>{t.categoria} · {t.produto}</TableCell>
                     {!isClient && <TableCell sx={{ display: { xs: 'none', md: 'table-cell' }, color: 'text.secondary' }}>{t.empresa}</TableCell>}
                     <TableCell><PriorityLabel level={t.prioridade} /></TableCell>

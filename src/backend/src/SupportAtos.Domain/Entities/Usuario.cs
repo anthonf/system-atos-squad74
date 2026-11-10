@@ -92,6 +92,21 @@ public partial class Usuario
         CodigoExterno = codigoExterno.Trim();
     }
 
+    public void DefinirIdPortal(int id)
+    {
+        if (id <= 0)
+        {
+            throw new Exceptions.DomainException("O ID do portal deve ser maior que zero.");
+        }
+
+        if (Id != 0 && Id != id)
+        {
+            throw new Exceptions.DomainException("O ID do usuario nao pode ser alterado.");
+        }
+
+        Id = id;
+    }
+
     public void AlterarGrupoEmpresa(int grupoEmpresaId)
     {
         if (grupoEmpresaId <= 0)

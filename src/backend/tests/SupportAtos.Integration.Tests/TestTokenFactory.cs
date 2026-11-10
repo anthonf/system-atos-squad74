@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
+using SupportAtos.Api.Options;
 
 namespace SupportAtos.Integration.Tests;
 
@@ -13,11 +14,27 @@ public static class TestTokenFactory
 {
     public const string Issuer = "supportatos-tests";
     public const string Audience = "supportatos-api";
-    public const string ApiKey = "chave-teste-n8n";
+    public const string PortalApiKey = "portal-test-key-0123456789-abcdefghijklmnop";
+    public const string AutomacaoApiKey = "automacao-test-key-0123456789-abcdefghijkl";
+    public const string WebhookApiKey = "webhook-test-key-0123456789-abcdefghijklmnop";
+
+    public static string PortalApiKeyHash => ApiKeyHasher.Hash(PortalApiKey);
+
+    public static string AutomacaoApiKeyHash => ApiKeyHasher.Hash(AutomacaoApiKey);
 
     private static readonly RSA Chave = RSA.Create(2048);
+    private static readonly object ChaveLock = new();
 
-    public static string ChavePublicaPem => Chave.ExportSubjectPublicKeyInfoPem();
+    public static string ChavePublicaPem
+    {
+        get
+        {
+            lock (ChaveLock)
+            {
+                return Chave.ExportSubjectPublicKeyInfoPem();
+            }
+        }
+    }
 
     public static string CriarToken(
         string sub,
@@ -53,6 +70,9 @@ public static class TestTokenFactory
             expires: expira,
             signingCredentials: new SigningCredentials(chaveAssinatura ?? new RsaSecurityKey(Chave), SecurityAlgorithms.RsaSha256));
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        lock (ChaveLock)
+        {
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
 }

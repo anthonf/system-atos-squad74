@@ -6,7 +6,7 @@ public record ResponderChamadoInput(string Mensagem, TipoInteracao Tipo = TipoIn
 
 public record MudarStatusInput(StatusChamado NovoStatus);
 
-public record AtribuirAgenteInput(int? AgenteId = null, bool Automatico = false);
+public record AtribuirAgenteInput(int? AgenteId = null, bool Automatico = false, bool Desatribuir = false);
 
 public record FilaChamadosQuery(
     StatusChamado? Status = null,

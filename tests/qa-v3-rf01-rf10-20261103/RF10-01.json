@@ -1,0 +1,310 @@
+{
+  "id": "RF10-01",
+  "requirement": "2.5, 6.2, 8; RF10",
+  "objective": "Usuario e grupo inexistentes",
+  "expected": "Criar ambos na abertura, com IDs 61090/71090, e vincular o chamado.",
+  "phase": "sem mock 4/3",
+  "preconditions": "Banco exclusivo confirmado; SLA QA/Valid ativo. Fixtures e ausencia/existencia de IDs documentadas no snapshot before. Sem JWT salvo quando explicito.",
+  "attempts": [
+    {
+      "variant": "principal",
+      "time_utc": "2026-11-03T14:46:17.085464+00:00",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:19053/api/chamados",
+        "headers": {
+          "X-Api-Key": "[CHAVE QA VALIDA OCULTA]"
+        },
+        "body": {
+          "produto": "QA",
+          "categoria": "Valid",
+          "descricao": "Descricao QA v3",
+          "mensagemInicial": "Descricao QA v3",
+          "titulo": "QA v3",
+          "usuario": {
+            "id": 61090,
+            "nome": "QA Novo",
+            "email": "novo@qa.example.invalid"
+          },
+          "grupoEmpresa": {
+            "id": 71090,
+            "nome": "QA Grupo Novo"
+          }
+        }
+      },
+      "response": {
+        "status": 500,
+        "headers": {
+          "Connection": "close",
+          "Content-Type": "application/problem+json",
+          "Date": "Tue, 03 Nov 2026 14:46:16 GMT",
+          "Server": "Kestrel",
+          "Transfer-Encoding": "chunked"
+        },
+        "body": {
+          "title": "Erro interno do servidor",
+          "status": 500,
+          "detail": "Ocorreu um erro inesperado ao processar a requisição.",
+          "errors": [
+            "Ocorreu um erro inesperado ao processar a requisição."
+          ]
+        },
+        "raw_body": "{\"title\":\"Erro interno do servidor\",\"status\":500,\"detail\":\"Ocorreu um erro inesperado ao processar a requisi\\u00E7\\u00E3o.\",\"errors\":[\"Ocorreu um erro inesperado ao processar a requisi\\u00E7\\u00E3o.\"]}"
+      },
+      "before": {
+        "database": "qa_v3_138ddc9400",
+        "role": "qa_v3",
+        "__EFMigrationsHistory": [
+          {
+            "MigrationId": "20260915173343_InitialCreate",
+            "ProductVersion": "10.0.0"
+          },
+          {
+            "MigrationId": "20260919141706_AddPortalExternalId",
+            "ProductVersion": "10.0.0"
+          },
+          {
+            "MigrationId": "20260927195618_AlinharAoSqlOficial",
+            "ProductVersion": "10.0.0"
+          }
+        ],
+        "anexo": [],
+        "chamado": [],
+        "grupo_empresa": [
+          {
+            "id": 3301,
+            "nome": "QA V3 Legado",
+            "codigo_externo": "95001",
+            "criado_em": "2026-11-03T14:46:13.747803",
+            "grupo_pai_id": null,
+            "tipo": "matriz"
+          },
+          {
+            "id": 71001,
+            "nome": "QA V3 Grupo A",
+            "codigo_externo": "v3-grupo-a",
+            "criado_em": "2026-11-03T14:46:13.747803",
+            "grupo_pai_id": null,
+            "tipo": "matriz"
+          },
+          {
+            "id": 71002,
+            "nome": "QA V3 Grupo B",
+            "codigo_externo": "v3-grupo-b",
+            "criado_em": "2026-11-03T14:46:13.747803",
+            "grupo_pai_id": null,
+            "tipo": "matriz"
+          }
+        ],
+        "interacao": [],
+        "log_auditoria": [],
+        "provisionamento_audit": [],
+        "sla_config": [
+          {
+            "id": 1,
+            "produto": "QA",
+            "categoria": "Valid",
+            "prioridade": "Media",
+            "tempo_resposta_min": 60,
+            "tempo_resolucao_min": 480,
+            "ativo": true
+          }
+        ],
+        "usuario": [
+          {
+            "id": 2301,
+            "nome": "QA V3 Legado",
+            "email": "legado@qa.example.invalid",
+            "grupo_empresa_id": 3301,
+            "papel": "Cliente",
+            "codigo_externo": "94001",
+            "atualizado_em": null,
+            "criado_em": "2026-11-03T14:46:13.74905"
+          },
+          {
+            "id": 61001,
+            "nome": "QA V3 A",
+            "email": "a@qa.example.invalid",
+            "grupo_empresa_id": 71001,
+            "papel": "Cliente",
+            "codigo_externo": "v3-a",
+            "atualizado_em": null,
+            "criado_em": "2026-11-03T14:46:13.74905"
+          },
+          {
+            "id": 61002,
+            "nome": "QA V3 B",
+            "email": "b@qa.example.invalid",
+            "grupo_empresa_id": 71002,
+            "papel": "Cliente",
+            "codigo_externo": "v3-b",
+            "atualizado_em": null,
+            "criado_em": "2026-11-03T14:46:13.74905"
+          },
+          {
+            "id": 61003,
+            "nome": "QA V3 C",
+            "email": "c@qa.example.invalid",
+            "grupo_empresa_id": 71001,
+            "papel": "Cliente",
+            "codigo_externo": "v3-c",
+            "atualizado_em": null,
+            "criado_em": "2026-11-03T14:46:13.74905"
+          }
+        ]
+      },
+      "after": {
+        "database": "qa_v3_138ddc9400",
+        "role": "qa_v3",
+        "__EFMigrationsHistory": [
+          {
+            "MigrationId": "20260915173343_InitialCreate",
+            "ProductVersion": "10.0.0"
+          },
+          {
+            "MigrationId": "20260919141706_AddPortalExternalId",
+            "ProductVersion": "10.0.0"
+          },
+          {
+            "MigrationId": "20260927195618_AlinharAoSqlOficial",
+            "ProductVersion": "10.0.0"
+          }
+        ],
+        "anexo": [],
+        "chamado": [],
+        "grupo_empresa": [
+          {
+            "id": 3301,
+            "nome": "QA V3 Legado",
+            "codigo_externo": "95001",
+            "criado_em": "2026-11-03T14:46:13.747803",
+            "grupo_pai_id": null,
+            "tipo": "matriz"
+          },
+          {
+            "id": 71001,
+            "nome": "QA V3 Grupo A",
+            "codigo_externo": "v3-grupo-a",
+            "criado_em": "2026-11-03T14:46:13.747803",
+            "grupo_pai_id": null,
+            "tipo": "matriz"
+          },
+          {
+            "id": 71002,
+            "nome": "QA V3 Grupo B",
+            "codigo_externo": "v3-grupo-b",
+            "criado_em": "2026-11-03T14:46:13.747803",
+            "grupo_pai_id": null,
+            "tipo": "matriz"
+          }
+        ],
+        "interacao": [],
+        "log_auditoria": [],
+        "provisionamento_audit": [],
+        "sla_config": [
+          {
+            "id": 1,
+            "produto": "QA",
+            "categoria": "Valid",
+            "prioridade": "Media",
+            "tempo_resposta_min": 60,
+            "tempo_resolucao_min": 480,
+            "ativo": true
+          }
+        ],
+        "usuario": [
+          {
+            "id": 2301,
+            "nome": "QA V3 Legado",
+            "email": "legado@qa.example.invalid",
+            "grupo_empresa_id": 3301,
+            "papel": "Cliente",
+            "codigo_externo": "94001",
+            "atualizado_em": null,
+            "criado_em": "2026-11-03T14:46:13.74905"
+          },
+          {
+            "id": 61001,
+            "nome": "QA V3 A",
+            "email": "a@qa.example.invalid",
+            "grupo_empresa_id": 71001,
+            "papel": "Cliente",
+            "codigo_externo": "v3-a",
+            "atualizado_em": null,
+            "criado_em": "2026-11-03T14:46:13.74905"
+          },
+          {
+            "id": 61002,
+            "nome": "QA V3 B",
+            "email": "b@qa.example.invalid",
+            "grupo_empresa_id": 71002,
+            "papel": "Cliente",
+            "codigo_externo": "v3-b",
+            "atualizado_em": null,
+            "criado_em": "2026-11-03T14:46:13.74905"
+          },
+          {
+            "id": 61003,
+            "nome": "QA V3 C",
+            "email": "c@qa.example.invalid",
+            "grupo_empresa_id": 71001,
+            "papel": "Cliente",
+            "codigo_externo": "v3-c",
+            "atualizado_em": null,
+            "criado_em": "2026-11-03T14:46:13.74905"
+          }
+        ]
+      },
+      "differences": {
+        "__EFMigrationsHistory": {
+          "inserted": [],
+          "deleted": [],
+          "updated": []
+        },
+        "anexo": {
+          "inserted": [],
+          "deleted": [],
+          "updated": []
+        },
+        "chamado": {
+          "inserted": [],
+          "deleted": [],
+          "updated": []
+        },
+        "grupo_empresa": {
+          "inserted": [],
+          "deleted": [],
+          "updated": []
+        },
+        "interacao": {
+          "inserted": [],
+          "deleted": [],
+          "updated": []
+        },
+        "log_auditoria": {
+          "inserted": [],
+          "deleted": [],
+          "updated": []
+        },
+        "provisionamento_audit": {
+          "inserted": [],
+          "deleted": [],
+          "updated": []
+        },
+        "sla_config": {
+          "inserted": [],
+          "deleted": [],
+          "updated": []
+        },
+        "usuario": {
+          "inserted": [],
+          "deleted": [],
+          "updated": []
+        }
+      }
+    }
+  ],
+  "classification": "REPROVADO",
+  "justification": "Entrada completa aninhada; verificar HTTP e SQL. Sem fixture 4/3: entidades solicitadas devem nascer automaticamente; nao houve correcao da aplicacao.",
+  "evidence": "RF10-01.json"
+}

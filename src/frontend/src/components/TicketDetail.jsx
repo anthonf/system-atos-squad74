@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { ChevronLeft, LockOutlined, Send } from '@mui/icons-material';
-import { STAGES, STATUS } from '../data';
+import { AGENTES, STAGES, STATUS } from '../data';
 import { Eyebrow, SlaBar, StatusChip } from './ui';
 import { MONO } from '../theme';
 
@@ -27,58 +27,37 @@ export default function TicketDetail({ ticket, role, user, onBack, onUpdate, not
   const [reply, setReply] = useState('');
   const [note, setNote] = useState('');
   const [tab, setTab] = useState('conversa');
-  const [sending, setSending] = useState(false);
   const isAgent = role === 'agente';
-  const isMine = ticket.agente === user.nome || (ticket.agenteId && ticket.agenteId === user.usuarioId);
+  const isMine = ticket.agente === user.nome;
+  const team = Array.from(new Set([user.nome, ...AGENTES])).filter((a) => a !== ticket.agente);
   const idx = STAGES.indexOf(ticket.status === 'aguardando_cliente' ? 'em_andamento' : ticket.status);
   const activeStep = ticket.status === 'fechado' ? STAGES.length : idx;
 
-  const send = async () => {
-    if (!reply.trim() || sending) return;
-    setSending(true);
-    try {
-      await onUpdate({ ...ticket, _reply: reply.trim() }, 'responder');
-      setReply('');
-    } catch (err) {
-      // erro já notificado no pai
-    } finally {
-      setSending(false);
-    }
+  const send = () => {
+    if (!reply.trim()) return;
+    const msg = {
+      autor: isAgent ? (ticket.agente || 'Equipe de suporte') : user.nome,
+      tipo: isAgent ? 'agente' : 'cliente',
+      data: 'agora', texto: reply,
+    };
+    onUpdate({ ...ticket, mensagens: [...ticket.mensagens, msg], status: isAgent ? 'aguardando_cliente' : 'em_andamento' });
+    setReply('');
+    notify(isAgent ? 'Resposta enviada ao cliente.' : 'Atualização enviada à equipe de suporte.');
   };
 
-  const addNote = async () => {
-    if (!note.trim() || sending) return;
-    setSending(true);
-    try {
-      await onUpdate({ ...ticket, _note: note.trim() }, 'nota');
-      setNote('');
-    } catch (err) {
-    } finally {
-      setSending(false);
-    }
+  const addNote = () => {
+    if (!note.trim()) return;
+    onUpdate({ ...ticket, notas: [...ticket.notas, { autor: ticket.agente || 'Agente', data: 'agora', texto: note }] });
+    setNote('');
+    notify('Nota interna salva.');
   };
 
-  const setStatusAction = async (s) => {
-    try {
-      await onUpdate({ ...ticket, _novoStatus: s }, 'status');
-    } catch (err) {
-    }
-  };
-
-  const assign = async (a) => {
-    try {
-      if (!a || a === '__none__') {
-        await onUpdate({ ...ticket, _targetAgenteId: null }, 'repassar');
-        return;
-      }
-      // Se for o próprio nome/usuário, assume
-      if (a === user.nome || a === user.usuarioId) {
-        await onUpdate({ ...ticket }, 'assumir');
-        return;
-      }
-      await onUpdate({ ...ticket, _targetAgenteId: typeof a === 'number' ? a : a }, 'repassar');
-    } catch (err) {
-    }
+  const setStatus = (s) => { onUpdate({ ...ticket, status: s }); notify(`Status atualizado para "${STATUS[s].label}".`); };
+  const assign = (a) => {
+    onUpdate({ ...ticket, agente: a, status: ticket.status === 'aberto' ? 'em_andamento' : ticket.status });
+    if (!a) notify('Atribuição removida.');
+    else if (a === user.nome) notify('Você assumiu o chamado.');
+    else notify(`Chamado repassado para ${a}.`);
   };
 
   return (
@@ -111,7 +90,7 @@ export default function TicketDetail({ ticket, role, user, onBack, onUpdate, not
               </Stack>
               <TextField value={reply} onChange={(e) => setReply(e.target.value)} multiline minRows={3} fullWidth
                 placeholder={isAgent ? 'Responder ao cliente' : 'Adicionar uma atualização ao chamado'} sx={{ mb: 1.25 }} />
-              <Button variant="contained" startIcon={<Send fontSize="small" />} onClick={send} disabled={sending || !reply.trim()}>Enviar</Button>
+              <Button variant="contained" startIcon={<Send fontSize="small" />} onClick={send}>Enviar</Button>
             </>
           ) : (
             <>
@@ -124,7 +103,7 @@ export default function TicketDetail({ ticket, role, user, onBack, onUpdate, not
                 ) : ticket.notas.map((n, i) => <Message key={i} {...n} tint note />)}
               </Stack>
               <TextField value={note} onChange={(e) => setNote(e.target.value)} multiline minRows={3} fullWidth placeholder="Nota visível apenas para a equipe de suporte" sx={{ mb: 1.25 }} />
-              <Button variant="contained" color="inherit" onClick={addNote} disabled={sending || !note.trim()} sx={{ bgcolor: 'text.primary', color: 'background.paper', '&:hover': { bgcolor: 'text.secondary' } }}>Salvar nota</Button>
+              <Button variant="contained" color="inherit" onClick={addNote} sx={{ bgcolor: 'text.primary', color: 'background.paper', '&:hover': { bgcolor: 'text.secondary' } }}>Salvar nota</Button>
             </>
           )}
         </Box>
@@ -160,14 +139,14 @@ export default function TicketDetail({ ticket, role, user, onBack, onUpdate, not
                 {isMine && <Box component="span" sx={{ color: 'success.main' }}> (você)</Box>}
               </Typography>
 
-              {!isMine && <Button fullWidth variant="contained" onClick={() => assign(user.usuarioId || user.nome)} sx={{ mb: 2 }}>Assumir chamado</Button>}
+              {!isMine && <Button fullWidth variant="contained" onClick={() => assign(user.nome)} sx={{ mb: 2 }}>Assumir chamado</Button>}
 
               <Stack spacing={2}>
-                <TextField select size="small" fullWidth label="Repassar / Atribuir" value="" onChange={(e) => assign(e.target.value)}>
-                  {user.usuarioId && <MenuItem value={user.usuarioId}>Atribuir a mim</MenuItem>}
-                  {ticket.agenteId && <MenuItem value="__none__">Deixar sem agente</MenuItem>}
+                <TextField select size="small" fullWidth label="Repassar para" value="" onChange={(e) => assign(e.target.value === '__none__' ? '' : e.target.value)}>
+                  {team.map((a) => <MenuItem key={a} value={a}>{a}</MenuItem>)}
+                  {ticket.agente && <MenuItem value="__none__">Deixar sem agente</MenuItem>}
                 </TextField>
-                <TextField select size="small" fullWidth label="Status" value={ticket.status} onChange={(e) => setStatusAction(e.target.value)}>
+                <TextField select size="small" fullWidth label="Status" value={ticket.status} onChange={(e) => setStatus(e.target.value)}>
                   {Object.entries(STATUS).map(([k, v]) => <MenuItem key={k} value={k}>{v.label}</MenuItem>)}
                 </TextField>
               </Stack>

@@ -15,6 +15,16 @@ public static class AuthenticationSetup
     private const string FalhaProvisionamento = "SupportAtos.FalhaProvisionamento";
     public const string ApiKeyScheme = "ApiKey";
     public const string ApiKeyHeaderName = "X-Api-Key";
+    public const string ScopeClaim = "scope";
+    public const string PortalScope = "portal";
+    public const string AutomacaoScope = "automacao";
+    public const string PolicyPortal = "Portal";
+    public const string PolicyAutomacao = "Automacao";
+    public const string PolicyEquipe = "Equipe";
+    public const string PolicyEquipeAdmin = "EquipeAdmin";
+    public const string PolicyAtribuicao = "Atribuicao";
+    public const string PolicyJwt = "Jwt";
+    public const string PolicyPortalOuEquipe = "PortalOuEquipe";
 
     public static IServiceCollection AddSsoAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
@@ -40,8 +50,6 @@ public static class AuthenticationSetup
                 "SSO não configurado: defina 'Sso:Audience' via user-secrets ou variáveis de ambiente.");
         }
 
-        var apiKeyConfigurada = !string.IsNullOrWhiteSpace(sso.ApiKey);
-
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -52,22 +60,6 @@ public static class AuthenticationSetup
         {
             jwt.MapInboundClaims = false;
             jwt.SaveToken = true;
-            // Rotas de portal exigem JWT explícito (AuthenticationSchemes = JwtBearer).
-            // O seletor só desvia para ApiKey quando há X-Api-Key configurada no servidor
-            // E não há Bearer na requisição — um JWT válido nunca é derrubado por ApiKey.
-            jwt.ForwardDefaultSelector = ctx =>
-            {
-                if (!apiKeyConfigurada)
-                {
-                    return JwtBearerDefaults.AuthenticationScheme;
-                }
-
-                var temApiKey = ctx.Request.Headers.ContainsKey(ApiKeyHeaderName);
-                var authorization = ctx.Request.Headers.Authorization.ToString();
-                var temBearer = authorization.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase);
-
-                return temApiKey && !temBearer ? ApiKeyScheme : JwtBearerDefaults.AuthenticationScheme;
-            };
 
             var tvp = jwt.TokenValidationParameters;
             tvp.ClockSkew = TimeSpan.FromSeconds(sso.ClockSkewSeconds);
