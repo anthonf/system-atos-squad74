@@ -94,7 +94,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMemoryCache();
 builder.Services.AddHealthChecks()
-    .AddNpgsql(
+    .AddNpgSql(
         builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty,
         name: "database",
         tags: new[] { "ready" });
