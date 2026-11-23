@@ -56,7 +56,7 @@ export function useApp({ tickets, loading, error, onRefresh, role, user, onNew }
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const scoped = role === 'cliente' ? tickets.filter((t) => t.empresa === user.empresa) : tickets;
+  const scoped = role === 'cliente' ? tickets.filter((t) => user.grupoEmpresaId != null && t.grupoEmpresaId === user.grupoEmpresaId) : tickets;
   const filtered = useMemo(() => scoped.filter((x) => {
     if (status !== 'todos' && x.status !== status) return false;
     if (produto !== 'todos' && x.produto !== produto) return false;

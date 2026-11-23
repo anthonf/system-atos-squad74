@@ -24,7 +24,8 @@ public class ResponderChamadoUseCaseTests
         FakeChamadoRepository chamados,
         PapelUsuario papel = PapelUsuario.Agente,
         int usuarioId = 2,
-        string nome = "Diego Ramos")
+        string nome = "Diego Ramos",
+        int grupoEmpresaId = 1)
     {
         var currentUser = new FakeCurrentUser
         {
@@ -32,7 +33,8 @@ public class ResponderChamadoUseCaseTests
             {
                 Papel = papel,
                 UsuarioIdInterno = usuarioId,
-                Nome = nome
+                Nome = nome,
+                GrupoEmpresaIdInterno = grupoEmpresaId
             }
         };
         return new ResponderChamadoUseCase(
@@ -68,14 +70,16 @@ public class ResponderChamadoUseCaseTests
         Assert.Equal(PapelUsuario.Supervisor, interacao.PapelUsuario);
     }
 
-    [Fact]
-    public async Task Handle_ComChamadoFechado_DeveLancarValidationException()
+    [Theory]
+    [InlineData(PapelUsuario.Agente)]
+    [InlineData(PapelUsuario.Cliente)]
+    public async Task Handle_ComChamadoFechado_DeveLancarValidationException(PapelUsuario papel)
     {
         var chamado = NovoChamado();
         chamado.MudarStatus(StatusChamado.Fechado, DateTime.UtcNow);
         var chamados = new FakeChamadoRepository();
         await chamados.AddAsync(chamado);
-        var useCase = CriarUseCase(chamados);
+        var useCase = CriarUseCase(chamados, papel: papel);
 
         var excecao = await Assert.ThrowsAsync<ValidationException>(() =>
             useCase.Handle("SA-1", new ResponderChamadoInput("Nova mensagem.")));
@@ -92,6 +96,35 @@ public class ResponderChamadoUseCaseTests
 
         await Assert.ThrowsAsync<ForbiddenException>(() =>
             useCase.Handle("SA-1", new ResponderChamadoInput("Nota.", TipoInteracao.NotaInterna)));
+    }
+
+    [Fact]
+    public async Task Handle_ClienteDoMesmoGrupo_DevePersistirRespostaPublicaSemForcarStatus()
+    {
+        var chamados = new FakeChamadoRepository();
+        await chamados.AddAsync(NovoChamado());
+        var useCase = CriarUseCase(chamados, papel: PapelUsuario.Cliente, usuarioId: 3, nome: "Cliente do grupo");
+
+        var resposta = await useCase.Handle("SA-1", new ResponderChamadoInput("Resposta pública", TipoInteracao.Publica));
+
+        var chamado = Assert.Single(chamados.Chamados);
+        Assert.Equal("Resposta pública", Assert.Single(chamado.Interacoes).Mensagem);
+        Assert.Equal(StatusChamado.Aberto, chamado.Status);
+        Assert.Equal(PapelUsuario.Cliente, resposta.PapelUsuario);
+        Assert.Equal(3, resposta.UsuarioId);
+    }
+
+    [Fact]
+    public async Task Handle_ClienteDeOutroGrupo_DeveNegarSemAdicionarInteracao()
+    {
+        var chamados = new FakeChamadoRepository();
+        await chamados.AddAsync(NovoChamado());
+        var useCase = CriarUseCase(chamados, papel: PapelUsuario.Cliente, grupoEmpresaId: 2);
+
+        await Assert.ThrowsAsync<NotFoundException>(() =>
+            useCase.Handle("SA-1", new ResponderChamadoInput("Sem autorização", TipoInteracao.Publica)));
+
+        Assert.Empty(Assert.Single(chamados.Chamados).Interacoes);
     }
 
     private sealed class FakeWebhookDispatcher : IWebhookDispatcher

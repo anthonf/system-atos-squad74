@@ -29,9 +29,9 @@ const PICKER_TEXT = {
 /** /chamados/:id — cliente só abre chamado da própria empresa; id inexistente volta para a lista. */
 function TicketDetailRoute({ tickets, session, onUpdate }: TicketDetailRouteProps) {
   const { t: tr } = useTranslation();
-  const { ticket, canView, loading, error, recarregar, backToList } = useTicketDetailRoute({ tickets, session, onUpdate });
-  if (!ticket || !canView) return loading ? <ViewSkeleton /> : <Navigate to="/chamados" replace />;
+  const { ticket, canView, loading, error, notFound, recarregar, backToList } = useTicketDetailRoute({ tickets, session, onUpdate });
   if (loading) return <ViewSkeleton />;
+  if (notFound || (!error && (!ticket || !canView))) return <Navigate to="/chamados" replace />;
   return (
     <>
       {error && (
@@ -39,7 +39,7 @@ function TicketDetailRoute({ tickets, session, onUpdate }: TicketDetailRouteProp
           {tr('detail.loadError')}
         </Alert>
       )}
-      <TicketDetail ticket={ticket} role={session.role} user={session} onBack={backToList} onUpdate={onUpdate} />
+      {ticket && canView && <TicketDetail ticket={ticket} role={session.role} user={session} onBack={backToList} onUpdate={onUpdate} />}
     </>
   );
 }

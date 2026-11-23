@@ -20,7 +20,9 @@ export default function Reports({ tickets, role, user }: ReportsProps) {
   const { atos } = useTheme();
   const { t: tr } = useTranslation();
   const [empresa, setEmpresa] = useState(role === 'cliente' ? user.empresa : 'todas');
-  const scoped = useMemo(() => tickets.filter((t) => empresa === 'todas' || t.empresa === empresa), [tickets, empresa]);
+  const scoped = useMemo(() => tickets.filter((t) => role === 'cliente'
+    ? user.grupoEmpresaId != null && t.grupoEmpresaId === user.grupoEmpresaId
+    : empresa === 'todas' || t.empresa === empresa), [tickets, empresa, role, user.grupoEmpresaId]);
   const produtos = useMemo(() => [...new Set(tickets.map((t) => t.produto))].sort(), [tickets]);
   const categorias = useMemo(() => [...new Set(tickets.map((t) => t.categoria))].sort(), [tickets]);
   const grupos = useMemo(() => [...new Set(tickets.map((t) => t.empresa))].sort(), [tickets]);

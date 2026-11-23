@@ -17,7 +17,7 @@ import {
 } from '../../api';
 import { STAGES } from '../../data';
 import { notifyApiError } from '../../notify';
-import type { Message as MessageData, Role, Session, StatusKey, Ticket } from '../../types';
+import type { Role, Session, StatusKey, Ticket } from '../../types';
 
 const messageSchema = yup.object({ text: yup.string().trim().required('validation.required') });
 export type MessageFormValues = yup.InferType<typeof messageSchema>;
@@ -64,36 +64,29 @@ export function useApp({ ticket, role, user, onUpdate }: TicketDetailProps) {
     setBusy(true);
     try {
       await operacao();
-      await recarregar();
       toast.success(mensagem);
+      try {
+        await recarregar();
+      } catch (err) {
+        notifyApiError(err, t('detail.loadError'));
+      }
+      return true;
     } catch (err) {
       notifyApiError(err, t('detail.actionError'));
+      return false;
     } finally {
       setBusy(false);
     }
   };
 
   const send = async (texto: string) => {
-    if (!isTeam) {
-      const msg: MessageData = {
-        autor: user.nome,
-        autorId: user.usuarioId ?? 0,
-        tipo: 'cliente',
-        tipoInteracao: 'Publica',
-        data: new Date().toISOString(),
-        texto,
-      };
-      onUpdate({ ...ticket, mensagens: [...ticket.mensagens, msg], status: 'em_andamento' });
-      toast.success(t('detail.toasts.replyClient'));
-      return;
-    }
-    if (fechado) return;
-    await executar(() => responderChamado(ticket.id, texto, 'Publica'), t('detail.toasts.replyTeam'));
+    if (fechado) return false;
+    return executar(() => responderChamado(ticket.id, texto, 'Publica'), t(isTeam ? 'detail.toasts.replyTeam' : 'detail.toasts.replyClient'));
   };
 
   const addNote = async (texto: string) => {
-    if (!isTeam || fechado) return;
-    await executar(() => responderChamado(ticket.id, texto, 'NotaInterna'), t('detail.toasts.noteSaved'));
+    if (!isTeam || fechado) return false;
+    return executar(() => responderChamado(ticket.id, texto, 'NotaInterna'), t('detail.toasts.noteSaved'));
   };
 
   const setStatus = async (s: StatusKey) => {
@@ -124,15 +117,14 @@ export function useApp({ ticket, role, user, onUpdate }: TicketDetailProps) {
   };
 }
 
-export function useMessageForm(onSubmit: (text: string) => Promise<void>) {
+export function useMessageForm(onSubmit: (text: string) => Promise<boolean>) {
   const { control, handleSubmit, reset, formState: { isSubmitting } } = useForm<MessageFormValues>({
     resolver: yupResolver(messageSchema),
     mode: 'onTouched',
     defaultValues: { text: '' },
   });
   const submit = async ({ text }: MessageFormValues) => {
-    await onSubmit(text);
-    reset();
+    if (await onSubmit(text)) reset();
   };
 
   return { control, handleSubmit, submit, isSubmitting };

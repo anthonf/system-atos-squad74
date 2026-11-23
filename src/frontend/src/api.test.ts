@@ -3,6 +3,7 @@ import {
   chamadoDtoParaTicket,
   criarChamado,
   listarChamados,
+  responderChamado,
   statusDtoParaKey,
   type ChamadoDto,
   type InteracaoDto,
@@ -65,6 +66,15 @@ beforeEach(() => {
 });
 
 describe('cliente da API', () => {
+  it('envia respostas públicas pelo contrato existente com autenticação', async () => {
+    vi.mocked(send).mockResolvedValue(json(interacoes[0], 201));
+    await responderChamado('AC/7', 'Resposta do cliente', 'Publica');
+    expect(send).toHaveBeenCalledWith('/api/chamados/AC%2F7/interacoes', expect.objectContaining({
+      method: 'POST',
+      body: JSON.stringify({ mensagem: 'Resposta do cliente', tipo: 'Publica' }),
+      headers: expect.objectContaining({ Authorization: 'Bearer token-de-teste' }),
+    }));
+  });
   it('abre chamados pelo endpoint interno com a identidade da equipe', async () => {
     vi.mocked(send).mockResolvedValue(json({ ...dto }, 201));
     await criarChamado({ titulo: '  Sincronização parada  ', produto: 'SAP Business One', categoria: 'Integração ERP', descricao: '  Pedidos não sincronizam.  ' });

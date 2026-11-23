@@ -33,7 +33,7 @@ interface MessageFormProps {
   placeholder: string;
   submitLabel: string;
   disabled?: boolean;
-  onSubmit: (text: string) => Promise<void>;
+  onSubmit: (text: string) => Promise<boolean>;
   startIcon?: React.ReactNode;
   buttonColor?: 'primary' | 'inherit';
   buttonSx?: SxProps<Theme>;
@@ -54,7 +54,7 @@ function MessageForm({ label, placeholder, submitLabel, disabled, onSubmit, star
 export default function TicketDetail(props: TicketDetailProps) {
   const { ticket, user, onBack } = props;
   const {
-    atos, t, tab, setTab, busy, fechado, isTeam, isMine, podeGerenciar, podeAssumir, agentes, team,
+    atos, t, tab, setTab, busy, fechado, isTeam, isMine, podeGerenciar, podeAssumir, team,
     activeStep, send, addNote, setStatus, assumir, repassar, desatribuir, atribuirAutomaticamente,
   } = useApp(props);
 
@@ -146,7 +146,7 @@ export default function TicketDetail(props: TicketDetailProps) {
 
               {podeAssumir && <Button fullWidth variant="contained" onClick={() => void assumir()} disabled={busy} sx={{ mb: 1 }}>{t('detail.take')}</Button>}
               {podeGerenciar && !ticket.agenteId && !fechado && (
-                <Button fullWidth variant="outlined" startIcon={<AutoAwesome />} onClick={() => void atribuirAutomaticamente()} disabled={busy || agentes.length === 0} sx={{ mb: 2 }}>
+                <Button fullWidth variant="outlined" startIcon={<AutoAwesome />} onClick={() => void atribuirAutomaticamente()} disabled={busy} sx={{ mb: 2 }}>
                   {t('detail.autoAssign')}
                 </Button>
               )}
@@ -156,7 +156,7 @@ export default function TicketDetail(props: TicketDetailProps) {
                   <TextField select size="small" fullWidth label={t('detail.reassign')} value="" onChange={(e) => {
                     if (e.target.value === '__none__') void desatribuir();
                     else void repassar(Number(e.target.value));
-                  }} disabled={busy || team.length === 0}>
+                  }} disabled={busy || (team.length === 0 && !ticket.agenteId)}>
                     {team.map((a) => <MenuItem key={a.id} value={a.id}>{a.nome}</MenuItem>)}
                     {ticket.agenteId && <MenuItem value="__none__">{t('detail.leaveUnassigned')}</MenuItem>}
                   </TextField>

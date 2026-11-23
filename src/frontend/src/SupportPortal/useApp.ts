@@ -6,6 +6,7 @@ import { getAuthState, logout as logoutSession, restoreSession, subscribeAuth } 
 import type { Lang } from '../i18n';
 import i18n, { LANGS } from '../i18n';
 import { notifyApiError } from '../notify';
+import { ApiError } from '../http';
 import { buildTheme } from '../theme';
 import type { AppNotification, Session, ThemeMode, Ticket } from '../types';
 
@@ -67,7 +68,9 @@ export function useApp() {
   const markAllRead = () => setNotifications((prev) => prev.map((n) => ({ ...n, lida: true })));
   const markOneRead = (id: number) => setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, lida: true } : n)));
 
-  const updateTicket = useCallback((updated: Ticket) => setTickets((prev) => prev.map((t) => (t.id === updated.id ? updated : t))), []);
+  const updateTicket = useCallback((updated: Ticket) => setTickets((prev) => prev.some((t) => t.id === updated.id)
+    ? prev.map((t) => (t.id === updated.id ? updated : t))
+    : [...prev, updated]), []);
   const createTicket = (t: Ticket) => {
     setTickets((prev) => [t, ...prev]);
     setNotifications((prev) => [{ id: Date.now(), texto: i18n.t('notifications.ticketRegistered', { id: t.id }), data: i18n.t('notifications.now'), lida: false }, ...prev]);
@@ -126,15 +129,18 @@ export function useTicketDetailRoute({ tickets, session, onUpdate }: TicketDetai
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [notFound, setNotFound] = useState(false);
   const recarregar = useCallback(async () => {
     if (!id) return;
     setLoading(true);
     setError(false);
+    setNotFound(false);
     try {
       const detalhe = await consultarChamado(id);
       onUpdate(chamadoDtoParaTicket(detalhe.chamado, session, detalhe.interacoes));
     } catch (err) {
-      setError(true);
+      setNotFound(err instanceof ApiError && err.status === 404);
+      setError(!(err instanceof ApiError && err.status === 404));
       notifyApiError(err, tr('detail.loadError'));
     } finally {
       setLoading(false);
@@ -144,7 +150,7 @@ export function useTicketDetailRoute({ tickets, session, onUpdate }: TicketDetai
   useEffect(() => { void recarregar(); }, [recarregar]);
 
   const ticket = tickets.find((x) => x.id === id);
-  const canView = Boolean(ticket && (session.role !== 'cliente' || ticket.empresa === session.empresa));
+  const canView = Boolean(ticket && (session.role !== 'cliente' || (session.grupoEmpresaId != null && ticket.grupoEmpresaId === session.grupoEmpresaId)));
   const backToList = () => navigate('/chamados');
-  return { ticket, canView, loading, error, recarregar, backToList };
+  return { ticket, canView, loading, error, notFound, recarregar, backToList };
 }
