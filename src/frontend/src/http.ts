@@ -1,6 +1,10 @@
 import i18n from './i18n';
 
-export const API_URL = ((import.meta.env.VITE_API_URL as string | undefined) || 'https://localhost:7099').replace(/\/$/, '');
+export const API_URL = (
+  (import.meta.env.VITE_API_URL as string | undefined) ||
+  (import.meta.env.PROD ? 'https://system-atos-api.onrender.com' : 'https://localhost:7099')
+).replace(/\/$/, '');
+
 export class ApiError extends Error {
   constructor(message: string, readonly status: number, readonly errors: string[] = [], readonly campo?: string) {
     super(message);

@@ -1,0 +1,38 @@
+databases:
+  - name: supportatos-db
+    databaseName: supportatos
+    user: admin
+    plan: free
+    postgresMajorVersion: '16'
+
+services:
+  - type: web
+    name: system-atos-api
+    runtime: docker
+    plan: free
+    rootDir: src/backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_HTTP_PORTS
+        value: "8080"
+      - key: Sso__Issuer
+        value: https://sso.atos.internal
+      - key: Sso__Audience
+        value: system-atos-hub
+      - key: Sso__PublicKeyPem
+        value: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArCSSr6ZIVcmHE5bzzehR\nAn3uahblIvDWa8IUs4q8/NKUFooJzpejIqxIoqikVyv68vVwwjf1KDBYsdck1v0e\noQ/meQTRYWC8tCkQ8iiAMklT+MTWZZFP92qcCJlEE7iohTlSlAEhC7dHReeXlJ7q\nEMrf0EHacY/X6l240tBOxKwP5b/84yA6jmuzZ/w3bdoH+eYL8ZL4k2STUYIoDcKR\nFrLj6yzQefqFLAWkLpqIi2zEnGNk87dcisMhQ8v7N/MkYTPssUdIYdvoLOb/qXie\nU7J22sBYxYkD5+N2kKcaQm5sOpDUtuMwrM9doTSz0XsEszhJ3pmG/+L1FCZQvnip\nrQIDAQAB\n-----END PUBLIC KEY-----"
+      - key: Auth__Issuer
+        value: https://sso.atos.internal
+      - key: Auth__Audience
+        value: system-atos-hub
+      - key: Auth__RefreshTokenCookieSameSite
+        value: None
+      - key: Cors__AllowedOrigins__0
+        value: https://cerulean-syrniki-02dc26.netlify.app
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: supportatos-db
+          property: connectionString
