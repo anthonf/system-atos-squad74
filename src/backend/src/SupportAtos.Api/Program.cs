@@ -199,6 +199,7 @@ builder.Services.AddAuthorization(options =>
             .RequireAuthenticatedUser()
             .RequireAssertion(context =>
                 context.User.HasClaim(AuthenticationSetup.ScopeClaim, AuthenticationSetup.PortalScope)
+                || context.User.IsInRole(nameof(PapelUsuario.Cliente))
                 || context.User.IsInRole(nameof(PapelUsuario.Admin))
                 || context.User.IsInRole(nameof(PapelUsuario.Supervisor))
                 || context.User.IsInRole(nameof(PapelUsuario.Agente))));

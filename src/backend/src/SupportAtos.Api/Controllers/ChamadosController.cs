@@ -12,6 +12,7 @@ namespace SupportAtos.Api.Controllers;
 public class ChamadosController : ControllerBase
 {
     private readonly AbrirChamadoPortalUseCase _abrirChamadoPortalUseCase;
+    private readonly CriarChamadoUseCase _criarChamadoUseCase;
     private readonly ConsultarChamadoUseCase _consultarChamadoUseCase;
     private readonly ListarChamadosUseCase _listarChamadosUseCase;
     private readonly ResponderChamadoUseCase _responderChamadoUseCase;
@@ -20,6 +21,7 @@ public class ChamadosController : ControllerBase
 
     public ChamadosController(
         AbrirChamadoPortalUseCase abrirChamadoPortalUseCase,
+        CriarChamadoUseCase criarChamadoUseCase,
         ConsultarChamadoUseCase consultarChamadoUseCase,
         ListarChamadosUseCase listarChamadosUseCase,
         ResponderChamadoUseCase responderChamadoUseCase,
@@ -27,6 +29,7 @@ public class ChamadosController : ControllerBase
         AtribuirAgenteUseCase atribuirAgenteUseCase)
     {
         _abrirChamadoPortalUseCase = abrirChamadoPortalUseCase;
+        _criarChamadoUseCase = criarChamadoUseCase;
         _consultarChamadoUseCase = consultarChamadoUseCase;
         _listarChamadosUseCase = listarChamadosUseCase;
         _responderChamadoUseCase = responderChamadoUseCase;
@@ -46,6 +49,21 @@ public class ChamadosController : ControllerBase
         CancellationToken cancellationToken)
     {
         var chamado = await _abrirChamadoPortalUseCase.Handle(input, cancellationToken);
+        return CreatedAtAction(nameof(ConsultarChamado), new { codigoPublico = chamado.CodigoPublico }, chamado);
+    }
+
+    [HttpPost("interno")]
+    [Authorize(Policy = AuthenticationSetup.PolicyEquipe)]
+    [ProducesResponseType(typeof(ChamadoDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> CriarChamadoInterno(
+        [FromBody] CriarChamadoInput input,
+        CancellationToken cancellationToken)
+    {
+        var chamado = await _criarChamadoUseCase.Handle(input, cancellationToken);
         return CreatedAtAction(nameof(ConsultarChamado), new { codigoPublico = chamado.CodigoPublico }, chamado);
     }
 

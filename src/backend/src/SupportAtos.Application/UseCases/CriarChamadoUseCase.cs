@@ -79,7 +79,7 @@ public class CriarChamadoUseCase
         await _chamadoRepository.AddAsync(chamado, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return DtoMapper.ToDto(chamado);
+        return DtoMapper.ToDto(chamado, usuarioAtual.Nome, usuarioAtual.NomeGrupo);
     }
 
     private async Task<string> GerarCodigoPublicoUnicoAsync(CancellationToken cancellationToken)

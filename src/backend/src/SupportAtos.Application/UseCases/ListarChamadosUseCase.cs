@@ -27,6 +27,6 @@ public class ListarChamadosUseCase
             : filtro;
 
         var chamados = await _chamadoRepository.ListarFilaAsync(filtroEfetivo, cancellationToken);
-        return chamados.Select(DtoMapper.ToDto).ToList();
+        return chamados.Select(c => DtoMapper.ToDto(c)).ToList();
     }
 }

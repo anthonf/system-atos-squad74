@@ -84,6 +84,7 @@ const es: Locale = {
     nearSla: 'Cerca del SLA', nearSlaDetail: 'menos del 20% del plazo restante',
     searchPlaceholder: 'Buscar por número, empresa o categoría', searchAria: 'Buscar tickets',
     refresh: 'Actualizar', filters: 'Filtros', export: 'Exportar',
+    loadError: 'No fue posible cargar los tickets. Intente de nuevo.',
     filterStatus: 'Estado', allStatus: 'Todos los estados', filterProduct: 'Producto', allProducts: 'Todos los productos',
     openedFrom: 'Abierto desde', openedTo: 'Abierto hasta',
     emptyClientTitle: 'Aún no ha abierto ningún ticket', emptyTeamTitle: 'Ningún ticket en la cola',
@@ -118,6 +119,10 @@ const es: Locale = {
   detail: {
     openedBy: '{{company}} — abierto por {{contact}} el {{date}}',
     tabConversation: 'Conversación con el cliente', tabNotes: 'Notas internas',
+    loadError: 'No fue posible cargar el detalle del ticket.', actionError: 'No fue posible completar la acción. Intente de nuevo.',
+    agentsLoadError: 'No fue posible cargar la lista de agentes.',
+    closedHint: 'Este ticket está cerrado. Vuélvalo a abrir para registrar nuevas interacciones.',
+    autoAssign: 'Asignar automáticamente',
     message: 'Mensaje', replyTeamPlaceholder: 'Responder al cliente', replyClientPlaceholder: 'Agregar una actualización al ticket',
     send: 'Enviar', note: 'Nota interna', notePlaceholder: 'Nota visible solo para el equipo de soporte',
     saveNote: 'Guardar nota', noNotes: 'Ninguna nota interna registrada.',
@@ -129,6 +134,7 @@ const es: Locale = {
       replyTeam: 'Respuesta enviada al cliente.', replyClient: 'Actualización enviada al equipo de soporte.',
       noteSaved: 'Nota interna guardada.', statusUpdated: 'Estado actualizado a "{{status}}".',
       unassigned: 'Asignación eliminada.', taken: 'Usted asumió el ticket.', reassigned: 'Ticket reasignado a {{agent}}.',
+      autoAssigned: 'Ticket asignado automáticamente.',
     },
   },
   reports: {

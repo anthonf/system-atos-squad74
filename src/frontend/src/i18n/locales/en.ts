@@ -84,6 +84,7 @@ const en: Locale = {
     nearSla: 'Near SLA', nearSlaDetail: 'less than 20% of the deadline left',
     searchPlaceholder: 'Search by number, company or category', searchAria: 'Search tickets',
     refresh: 'Refresh', filters: 'Filters', export: 'Export',
+    loadError: 'Could not load tickets. Please try again.',
     filterStatus: 'Status', allStatus: 'All statuses', filterProduct: 'Product', allProducts: 'All products',
     openedFrom: 'Opened from', openedTo: 'Opened until',
     emptyClientTitle: 'You have not opened any ticket yet', emptyTeamTitle: 'No tickets in the queue',
@@ -118,6 +119,10 @@ const en: Locale = {
   detail: {
     openedBy: '{{company}} — opened by {{contact}} on {{date}}',
     tabConversation: 'Conversation with the customer', tabNotes: 'Internal notes',
+    loadError: 'Could not load the ticket details.', actionError: 'Could not complete the action. Please try again.',
+    agentsLoadError: 'Could not load the agent list.',
+    closedHint: 'This ticket is closed. Reopen it to add new interactions.',
+    autoAssign: 'Assign automatically',
     message: 'Message', replyTeamPlaceholder: 'Reply to the customer', replyClientPlaceholder: 'Add an update to the ticket',
     send: 'Send', note: 'Internal note', notePlaceholder: 'Note visible only to the support team',
     saveNote: 'Save note', noNotes: 'No internal notes recorded.',
@@ -129,6 +134,7 @@ const en: Locale = {
       replyTeam: 'Reply sent to the customer.', replyClient: 'Update sent to the support team.',
       noteSaved: 'Internal note saved.', statusUpdated: 'Status updated to "{{status}}".',
       unassigned: 'Assignment removed.', taken: 'You took the ticket.', reassigned: 'Ticket reassigned to {{agent}}.',
+      autoAssigned: 'Ticket assigned automatically.',
     },
   },
   reports: {

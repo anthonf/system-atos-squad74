@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -33,6 +33,9 @@ export interface NewTicketModalProps {
 
 export interface TicketListProps {
   tickets: Ticket[];
+  loading: boolean;
+  error: boolean;
+  onRefresh: () => Promise<void>;
   role: Role;
   user: Session;
   onOpen: (id: string) => void;
@@ -41,7 +44,7 @@ export interface TicketListProps {
 
 interface ActiveFilter { key: string; label: string; clear: () => void }
 
-export function useApp({ tickets, role, user, onNew }: TicketListProps) {
+export function useApp({ tickets, loading, error, onRefresh, role, user, onNew }: TicketListProps) {
   const { atos } = useTheme();
   const { t } = useTranslation();
   const [status, setStatus] = useState<StatusKey | 'todos'>('todos');
@@ -50,11 +53,10 @@ export function useApp({ tickets, role, user, onNew }: TicketListProps) {
   const [dateFrom, setDateFrom] = useState<Dayjs | null>(null);
   const [dateTo, setDateTo] = useState<Dayjs | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const scoped = role === 'cliente' ? tickets.filter((t) => t.empresa === user.empresa) : tickets;
+  const scoped = role === 'cliente' ? tickets.filter((t) => user.grupoEmpresaId != null && t.grupoEmpresaId === user.grupoEmpresaId) : tickets;
   const filtered = useMemo(() => scoped.filter((x) => {
     if (status !== 'todos' && x.status !== status) return false;
     if (produto !== 'todos' && x.produto !== produto) return false;
@@ -71,7 +73,8 @@ export function useApp({ tickets, role, user, onNew }: TicketListProps) {
   const riskCount = scoped.filter(isAtRisk).length;
   const visible = filtered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   const isClient = role === 'cliente';
-  const canOpen = (isClient || role === 'admin') && Boolean(onNew); // administrador também abre chamados
+  const produtos = useMemo(() => [...new Set(tickets.map((x) => x.produto))].sort(), [tickets]);
+  const canOpen = Boolean(user.grupoEmpresaId) && (isClient || role === 'admin');
 
   const activeFilters: ActiveFilter[] = [];
   if (status !== 'todos') activeFilters.push({ key: 'status', label: t(`status.${status}`), clear: () => setStatus('todos') });
@@ -80,7 +83,7 @@ export function useApp({ tickets, role, user, onNew }: TicketListProps) {
   if (dateFrom) activeFilters.push({ key: 'from', label: `${t('tickets.openedFrom')}: ${dateFrom.format(DATE_FORMAT)}`, clear: () => setDateFrom(null) });
   if (dateTo) activeFilters.push({ key: 'to', label: `${t('tickets.openedTo')}: ${dateTo.format(DATE_FORMAT)}`, clear: () => setDateTo(null) });
 
-  const refresh = () => { setRefreshing(true); setTimeout(() => setRefreshing(false), 500); };
+  const refresh = useCallback(() => onRefresh(), [onRefresh]);
 
   const clearFilters = () => { setStatus('todos'); setProduto('todos'); setQ(''); setDateFrom(null); setDateTo(null); };
   const changeRowsPerPage = (value: number) => { setRowsPerPage(value); setPage(0); };
@@ -100,7 +103,9 @@ export function useApp({ tickets, role, user, onNew }: TicketListProps) {
     setDateTo,
     filtersOpen,
     setFiltersOpen,
-    refreshing,
+    loading,
+    error,
+    produtos,
     page,
     setPage,
     rowsPerPage,

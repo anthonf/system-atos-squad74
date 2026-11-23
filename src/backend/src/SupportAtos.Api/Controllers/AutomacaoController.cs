@@ -36,7 +36,7 @@ public class AutomacaoController : ControllerBase
         var chamados = await _chamadoRepository.ListarFilaAsync(
             new FilaChamadosQuery(status, categoria, produto, agenteId, grupoEmpresaId, semAgente),
             cancellationToken);
-        return Ok(chamados.Select(DtoMapper.ToDto).ToList());
+        return Ok(chamados.Select(c => DtoMapper.ToDto(c)).ToList());
     }
 
     [HttpGet("chamados/{codigoPublico}")]
@@ -62,7 +62,7 @@ public class AutomacaoController : ControllerBase
 
         var interacoes = chamado.Interacoes
             .OrderBy(interacao => interacao.CriadoEm)
-            .Select(DtoMapper.ToDto)
+            .Select(i => DtoMapper.ToDto(i))
             .ToList();
 
         return Ok(new ChamadoDetalheDto(DtoMapper.ToDto(chamado), interacoes));

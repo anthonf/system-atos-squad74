@@ -1,8 +1,9 @@
 # Atos Capital — Ferramenta de Suporte (Unidade Bank)
 
 Front-end do MVP do termo de abertura: login, fila de atendimento com SLA, resposta
-a chamados, notas internas, notificações e relatórios. A **abertura de chamado já usa a API real**
-(`src/api.ts`); o restante das telas ainda usa dados mockados (`src/data.ts`).
+a chamados, notas internas, notificações e relatórios. Fila, detalhe, interações, status,
+atribuição, abertura de chamado e cadastro de usuários usam a **API real** (`src/api.ts`).
+`src/data.ts` guarda apenas constantes visuais de status/prioridade/etapas; as fixture de teste ficam em `src/test/fixtures.ts`.
 
 ## Como rodar
 
@@ -42,7 +43,7 @@ A API em Development autoriza explicitamente essa origem para CORS e CSRF, prese
 Não é necessário alterar banco, usuários ou cookies: continuam HttpOnly, Secure e SameSite=Lax.
 O `npm run preview` não substitui este ambiente autenticado; use `npm run dev` para esta validação.
 
-### Telas que usam a API real (abertura de chamado e cadastro de usuários)
+### Telas que usam a API real (chamados, usuários e autenticação)
 
 A autenticação interna usa `POST /api/auth/login`, enviando `{ email, senha }`. A URL da API vem de
 `VITE_API_URL` (padrão `https://localhost:7099`; exemplo em `.env.example`). Nome, papel, identificador e grupo
@@ -55,6 +56,22 @@ de renderizar login ou telas protegidas. Requisições simultâneas compartilham
 ser repetida uma única vez com o novo JWT. Erros 403 não provocam refresh. Falha de renovação encerra o estado local.
 O logout limpa a memória imediatamente mesmo com falha de rede, mas a revogação no servidor exige sucesso da chamada:
 se ela falhar, um cookie ainda válido poderá restaurar a sessão numa nova carga. A coordenação é por aba.
+
+### Fila e detalhe com dados reais
+
+Todas as requisições de chamado passam por `request()` em `src/api.ts` (JWT em memória, uma renovação e uma repetição após 401):
+
+- `GET /api/chamados` — fila da equipe; clientes recebem `?grupoEmpresaId=` da sessão.
+- `GET /api/chamados/{codigo}` — detalhe com interações e nomes reais (autor, empresa e agente).
+- `POST /api/chamados/{codigo}/interacoes` — resposta pública (`Publica`) ou nota interna (`NotaInterna`).
+- `PATCH /api/chamados/{codigo}/status` e `PATCH /api/chamados/{codigo}/atribuir` — status e atribuição.
+- `GET /api/usuarios/agentes` — lista de agentes para repriorização/supervisão (somente equipe).
+- `GET /api/sla-categorias` — opções reais de produto/categoria do modal de abertura.
+- `POST /api/chamados/interno` — abre chamado usando o usuário autenticado e exige grupo de empresa; por isso o botão "Abrir novo chamado" some quando a sessão não tem grupo.
+
+`chamadoDtoParaTicket()` converte os DTOs para o modelo das telas: converte datas com `parseApiDate`, calcula SLA em horas a partir de `criadoEm`/`slaPrazo`, separa `Publica` em mensagens e `NotaInterna` em notas e preenche `usuarioNome`, `grupoEmpresaNome` e `agenteNome`. O stepper mantém as quatro etapas (`Aberto → Em andamento → Resolvido → Fechado`); `Aguardando cliente` aparece no status e no aviso de prazo, mas não é etapa. Chamado `Fechado` desabilita formulários e ações.
+
+Regras de permissão da API refletidas na interface: agente assume apenas chamados sem agente e não desatribui; supervisor/admin podem assumir, repassar, desatribuir e usar atribuição automática. A transição para "Aguardando cliente" é feita pelo cliente ou pelo fluxo da API; a resposta da equipe em `Aberto` vira `Em andamento` no backend.
 
 ### Validação manual da autenticação
 
@@ -113,7 +130,8 @@ Já aplicado no código:
 - **Movimento:** respeita `prefers-reduced-motion`.
 - **Mobile:** sem sobreposição no topo do login (320 px), tabs do login ajustadas, `100dvh` (barra do navegador), tabela de chamados
   com colunas essenciais (prioridade vai para baixo do título), modal de novo chamado em tela cheia, gráfico em barras horizontais,
-  gaveta e popover limitados à largura da tela, botões de 44 px no topo, formulários em largura total.
+   gaveta e popover limitados à largura da tela, botões de 44 px no topo, formulários em largura total.
+- **Estados remotos:** fila e detalhe mostram `ViewSkeleton`/`CircularProgress` durante o carregamento e cartão com "Tentar novamente" em falha de rede/API.
 
 Para conferir à mão (recomendado antes de entregar): 320 / 360 / 768 / 1024 px no DevTools (sem rolagem horizontal fora de tabelas);
 percorrer todas as telas só com Tab/Shift+Tab/Enter/Esc; zoom de 200%; Lighthouse (Accessibility) e a extensão axe DevTools em cada tela,
@@ -149,7 +167,7 @@ src/
 ├─ notify.ts             # notifyApiError (sonner)
 ├─ tokens.ts             # valores do Design System
 ├─ theme.ts              # tema MUI (claro/escuro), com a extensão de tipo `theme.atos`
-├─ data.ts               # constantes de domínio e dados mockados da fila
+├─ data.ts               # constantes visuais de status, prioridade e etapas
 ├─ i18n/                 # configuração do i18next e locales pt.ts / en.ts / es.ts
 └─ components/
    ├─ form/              # LineErrorForm e FormTextField (react-hook-form)
@@ -181,7 +199,7 @@ O código ainda tem os ramos da visão de cliente (`role === 'cliente'`), mas ne
 ## Título obrigatório na abertura de chamado
 
 - **Front** (`NewTicketModal`): Título é obrigatório (asterisco vermelho, erro sob o campo via `LineErrorForm`, até 200 caracteres).
-- **API** (`POST /api/chamados`): sem título (ausente, nulo, vazio ou só espaços) responde **400** com `{ detail, errors, campo: "titulo" }`;
+- **API** (`POST /api/chamados/interno`): sem título (ausente, nulo, vazio ou só espaços) responde **400** com `{ detail, errors, campo: "titulo" }`;
   o domínio (`Chamado.Criar`) também recusa título vazio e **não troca mais pela categoria**. `CriarChamadoInput.Titulo` não é mais opcional.
   O front mostra a mensagem da API **sob o campo Título** (erros `type: "server"` aparecem como vieram, sem tradução) e não fecha o formulário.
 - **Testes:** front — `npm test` (`src/components/NewTicketModal.test.tsx`, `src/auth.test.ts`); backend — `dotnet test`
@@ -189,7 +207,7 @@ O código ainda tem os ramos da visão de cliente (`role === 'cliente'`), mas ne
 
 ## O que ainda é só interface
 
-- "Esqueci minha senha", "Exportar" e "Atualizar" são visuais. "Lembrar acesso" fica marcado e desabilitado:
+- "Esqueci minha senha" e "Exportar" são visuais. "Atualizar" recarrega a fila/detalhe da API. "Lembrar acesso" fica marcado e desabilitado:
   a duração do acesso persistente é definida pelo cookie do backend, sem armazenamento de senha no navegador.
 - Seleção de colunas persistida (`<ColumnSelector/>` do template de tela) não foi feita.
 - Notificações e leitura vivem no estado local; numa integração real viriam do webhook

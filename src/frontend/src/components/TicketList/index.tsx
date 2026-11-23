@@ -53,7 +53,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import React from 'react';
 import { TITULO_MAX } from '../../api';
-import { PRODUCTS, STATUS } from '../../data';
+import { STATUS } from '../../data';
 import type { Dayjs } from '../../dates';
 import { DATE_FORMAT } from '../../dates';
 import { MONO } from '../../tokens';
@@ -182,7 +182,9 @@ export default function TicketList(props: TicketListProps) {
     setDateTo,
     filtersOpen,
     setFiltersOpen,
-    refreshing,
+    loading,
+    error,
+    produtos,
     page,
     setPage,
     rowsPerPage,
@@ -229,7 +231,7 @@ export default function TicketList(props: TicketListProps) {
           InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }}
           sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper', height: 42 } }} />
         {[
-          { label: t('tickets.refresh'), icon: <Refresh fontSize="small" sx={refreshing ? { animation: 'spin 1s linear infinite', '@keyframes spin': { to: { transform: 'rotate(360deg)' } } } : null} />, onClick: refresh },
+          { label: t('tickets.refresh'), icon: <Refresh fontSize="small" sx={loading ? { animation: 'spin 1s linear infinite', '@keyframes spin': { to: { transform: 'rotate(360deg)' } } } : null} />, onClick: refresh },
           { label: t('tickets.filters'), icon: <Tune fontSize="small" />, onClick: () => setFiltersOpen((o) => !o), on: filtersOpen || activeFilters.length > 0, expanded: filtersOpen },
           { label: t('tickets.export'), icon: <FileDownloadOutlined fontSize="small" /> },
         ].map((b) => (
@@ -249,7 +251,7 @@ export default function TicketList(props: TicketListProps) {
           </TextField>
           <TextField select size="small" label={t('tickets.filterProduct')} value={produto} onChange={(e) => setProduto(e.target.value)} sx={{ minWidth: 200 }}>
             <MenuItem value="todos">{t('tickets.allProducts')}</MenuItem>
-            {PRODUCTS.map((p) => <MenuItem key={p} value={p}>{p}</MenuItem>)}
+            {produtos.map((p) => <MenuItem key={p} value={p}>{p}</MenuItem>)}
           </TextField>
           <DatePicker label={t('tickets.openedFrom')} value={dateFrom} onChange={(v: Dayjs | null) => setDateFrom(v)} format={DATE_FORMAT}
             maxDate={dateTo ?? undefined} slotProps={{ textField: { size: 'small', sx: { minWidth: 200 } }, field: { clearable: true, onClear: () => setDateFrom(null) } }} />
@@ -264,7 +266,20 @@ export default function TicketList(props: TicketListProps) {
         </Stack>
       )}
 
-      {scoped.length === 0 || filtered.length === 0 ? (
+      {error && (
+        <Paper variant="outlined" sx={{ p: 2, mb: 1.5, borderColor: 'error.main', bgcolor: 'error.light', color: 'error.dark' }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ sm: 'center' }} justifyContent="space-between" spacing={1}>
+            <Typography variant="body2">{t('tickets.loadError')}</Typography>
+            <Button size="small" variant="outlined" color="inherit" startIcon={<Refresh />} onClick={refresh}>{t('common.tryAgain')}</Button>
+          </Stack>
+        </Paper>
+      )}
+      {loading && scoped.length === 0 && !error ? (
+        <Paper variant="outlined" sx={{ py: 6, textAlign: 'center' }}>
+          <CircularProgress size={24} />
+          <Typography color="text.secondary" mt={1.5}>{t('common.loading')}</Typography>
+        </Paper>
+      ) : scoped.length === 0 || filtered.length === 0 ? (
         <Paper variant="outlined" sx={{ py: 8, textAlign: 'center' }}>
           {scoped.length === 0 ? <InboxOutlined sx={{ fontSize: 30, color: 'text.disabled' }} /> : <Search sx={{ fontSize: 28, color: 'text.disabled' }} />}
           <Typography sx={{ fontWeight: 500, mt: 1 }}>

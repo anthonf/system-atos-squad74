@@ -6,10 +6,14 @@ export type Role = 'cliente' | 'agente' | 'supervisor' | 'admin';
 export type StatusKey = 'aberto' | 'em_andamento' | 'aguardando_cliente' | 'resolvido' | 'fechado';
 export type PriorityKey = 'alta' | 'media' | 'baixa';
 export type ToneKey = 'info' | 'warning' | 'error' | 'success' | 'purple' | 'muted';
+export type TipoInteracaoApi = 'Publica' | 'NotaInterna';
 
 export interface Message {
   autor: string;
+  autorId: number;
+  /** Classificação usada pela interface (define a cor/balão da mensagem). */
   tipo: 'cliente' | 'agente';
+  tipoInteracao: TipoInteracaoApi;
   /** Data/hora em ISO 8601 (exibida com formatDateTime). */
   data: string;
   texto: string;
@@ -17,6 +21,8 @@ export interface Message {
 
 export interface Note {
   autor: string;
+  autorId: number;
+  tipoInteracao: TipoInteracaoApi;
   /** Data/hora em ISO 8601. */
   data: string;
   texto: string;
@@ -24,6 +30,9 @@ export interface Note {
 
 export interface Ticket {
   id: string;
+  usuarioId: number;
+  grupoEmpresaId: number | null;
+  agenteId: number | null;
   empresa: string;
   contato: string;
   produto: string;

@@ -30,6 +30,8 @@ public class CriarChamadoUseCaseTests
         Assert.StartsWith("SA-", resultado.CodigoPublico);
         Assert.Equal(StatusChamado.Aberto, resultado.Status);
         Assert.Equal(Prioridade.Alta, resultado.Prioridade);
+        Assert.Equal(FakeCurrentUser.ContextoPadrao.Nome, resultado.UsuarioNome);
+        Assert.Equal(FakeCurrentUser.ContextoPadrao.NomeGrupo, resultado.GrupoEmpresaNome);
         var chamado = Assert.Single(fakeChamados.Chamados);
         Assert.Single(chamado.Interacoes);
         Assert.Equal("Não consigo acessar o sistema.", chamado.Interacoes.Single().Mensagem);
@@ -79,6 +81,25 @@ public class CriarChamadoUseCaseTests
             useCase.Handle(new CriarChamadoInput("Portal", "Login", "Não consigo acessar o sistema.", titulo)));
 
         Assert.Equal("O título é obrigatório.", excecao.Message);
+        Assert.Empty(fakeChamados.Chamados);
+    }
+
+    [Fact]
+    public async Task Handle_ComUsuarioSemGrupoEmpresa_DeveLancarValidationException()
+    {
+        var fakeChamados = new FakeChamadoRepository();
+        var useCase = new CriarChamadoUseCase(
+            new FakeCurrentUser
+            {
+                Usuario = FakeCurrentUser.ContextoPadrao with { GrupoEmpresaIdInterno = null }
+            },
+            new FakeSlaCategoriaRepository(),
+            fakeChamados,
+            new FakeUnitOfWork());
+
+        await Assert.ThrowsAsync<ValidationException>(() =>
+            useCase.Handle(new CriarChamadoInput("Portal", "Login", "Mensagem.", "Título")));
+
         Assert.Empty(fakeChamados.Chamados);
     }
 
