@@ -1,10 +1,11 @@
 import { useApp, useTicketDetailRoute, type TicketDetailRouteProps } from './useApp';
 // Aplicação: estado global (sessão, chamados, notificações), tema MUI e rotas (React Router) com navegação por papel.
-import { Box, CssBaseline, Skeleton, Stack, ThemeProvider } from '@mui/material';
+import { Alert, Box, Button, CssBaseline, ThemeProvider } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { enUS, esES, ptBR } from '@mui/x-date-pickers/locales';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import Activate from '../components/Activate';
@@ -13,7 +14,7 @@ import LoginScreen from '../components/Login';
 import Reports from '../components/Reports';
 import TicketDetail from '../components/TicketDetail';
 import TicketList, { NewTicketModal } from '../components/TicketList';
-import { visuallyHidden } from '../components/ui';
+import { ViewSkeleton, visuallyHidden } from '../components/ui';
 import UserAdmin from '../components/UserAdmin';
 import { DAYJS_LOCALE } from '../i18n';
 import type { Role } from '../types';
@@ -25,21 +26,22 @@ const PICKER_TEXT = {
   es: esES.components.MuiLocalizationProvider.defaultProps.localeText,
 };
 
-function ViewSkeleton() {
-  return (
-    <Box sx={{ maxWidth: 1152 }} aria-hidden>
-      <Skeleton width={220} height={34} />
-      <Skeleton width={320} height={22} sx={{ mb: 4 }} />
-      <Stack spacing={1.5}>{[0, 1, 2, 3, 4].map((i) => <Skeleton key={i} variant="rounded" height={48} />)}</Stack>
-    </Box>
-  );
-}
-
 /** /chamados/:id — cliente só abre chamado da própria empresa; id inexistente volta para a lista. */
 function TicketDetailRoute({ tickets, session, onUpdate }: TicketDetailRouteProps) {
-  const { ticket, canView, backToList } = useTicketDetailRoute({ tickets, session, onUpdate });
-  if (!ticket || !canView) return <Navigate to="/chamados" replace />;
-  return <TicketDetail ticket={ticket} role={session.role} user={session} onBack={backToList} onUpdate={onUpdate} />;
+  const { t: tr } = useTranslation();
+  const { ticket, canView, loading, error, recarregar, backToList } = useTicketDetailRoute({ tickets, session, onUpdate });
+  if (!ticket || !canView) return loading ? <ViewSkeleton /> : <Navigate to="/chamados" replace />;
+  if (loading) return <ViewSkeleton />;
+  return (
+    <>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }} action={<Button color="inherit" size="small" onClick={() => void recarregar()}>{tr('common.tryAgain')}</Button>}>
+          {tr('detail.loadError')}
+        </Alert>
+      )}
+      <TicketDetail ticket={ticket} role={session.role} user={session} onBack={backToList} onUpdate={onUpdate} />
+    </>
+  );
 }
 
 /** Rota restrita a alguns papéis; os demais voltam para a lista de chamados. */
@@ -60,7 +62,9 @@ export default function SupportPortal() {
     session,
     authStatus,
     tickets,
-    loadingView,
+    ticketsLoading,
+    ticketsError,
+    carregarChamados,
     mobileNavOpen,
     setMobileNavOpen,
     notifications,
@@ -110,17 +114,13 @@ export default function SupportPortal() {
               />
               <Box component="main" id="main-content" ref={mainRef} tabIndex={-1}
                 sx={{ flex: 1, minWidth: 0, px: { xs: 2, sm: 2.5, md: 5 }, py: { xs: 2.5, md: 4 }, outline: 'none', overflowWrap: 'break-word' }}>
-                {loadingView ? (
-                  <ViewSkeleton />
-                ) : (
-                  <Routes>
-                    <Route path="/chamados" element={<TicketList tickets={tickets} role={session.role} user={session} onOpen={(id) => navigate(`/chamados/${id}`)} onNew={() => setShowNewTicket(true)} />} />
-                    <Route path="/chamados/:id" element={<TicketDetailRoute tickets={tickets} session={session} onUpdate={updateTicket} />} />
-                    <Route path="/relatorios" element={<Reports tickets={tickets} role={session.role} user={session} />} />
-                    <Route path="/usuarios" element={<RoleRoute allow={['admin']} role={session.role}><UserAdmin /></RoleRoute>} />
-                    <Route path="*" element={<Navigate to="/chamados" replace />} />
-                  </Routes>
-                )}
+                <Routes>
+                  <Route path="/chamados" element={<TicketList tickets={tickets} loading={ticketsLoading} error={ticketsError} onRefresh={carregarChamados} role={session.role} user={session} onOpen={(id) => navigate(`/chamados/${id}`)} onNew={() => setShowNewTicket(true)} />} />
+                  <Route path="/chamados/:id" element={<TicketDetailRoute tickets={tickets} session={session} onUpdate={updateTicket} />} />
+                  <Route path="/relatorios" element={<Reports tickets={tickets} role={session.role} user={session} />} />
+                  <Route path="/usuarios" element={<RoleRoute allow={['admin']} role={session.role}><UserAdmin /></RoleRoute>} />
+                  <Route path="*" element={<Navigate to="/chamados" replace />} />
+                </Routes>
               </Box>
             </Box>
             {showNewTicket && (session.role === 'cliente' || session.role === 'admin') && <NewTicketModal user={session} onClose={() => setShowNewTicket(false)} onCreate={createTicket} />}

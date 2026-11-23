@@ -36,7 +36,7 @@ public class ConsultarChamadoUseCase
 
         var interacoes = visiveis
             .OrderBy(i => i.CriadoEm)
-            .Select(DtoMapper.ToDto)
+            .Select(i => DtoMapper.ToDto(i))
             .ToList();
 
         return new ChamadoDetalheDto(DtoMapper.ToDto(chamado), interacoes);

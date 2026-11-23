@@ -3,7 +3,7 @@ import React from 'react';
 import type { SxProps, Theme } from '@mui/material/styles';
 import type { SvgIconComponent } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { Box, Chip, LinearProgress, Paper, Stack, Typography } from '@mui/material';
+import { Box, Chip, LinearProgress, Paper, Skeleton, Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { WarningAmberRounded } from '@mui/icons-material';
 import { STATUS, PRIORITY } from '../data';
@@ -15,6 +15,16 @@ export const visuallyHidden = {
   border: 0, clip: 'rect(0 0 0 0)', height: '1px', margin: '-1px', overflow: 'hidden',
   padding: 0, position: 'absolute', whiteSpace: 'nowrap', width: '1px',
 } as const;
+
+export function ViewSkeleton() {
+  return (
+    <Box sx={{ maxWidth: 1152 }} aria-hidden>
+      <Skeleton width={220} height={34} />
+      <Skeleton width={320} height={22} sx={{ mb: 4 }} />
+      <Stack spacing={1.5}>{[0, 1, 2, 3, 4].map((i) => <Skeleton key={i} variant="rounded" height={48} />)}</Stack>
+    </Box>
+  );
+}
 
 export function BrandMark({ onDark, width = 150 }: { onDark?: boolean; width?: number }) {
   const { t } = useTranslation();

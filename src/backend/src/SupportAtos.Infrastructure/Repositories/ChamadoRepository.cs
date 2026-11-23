@@ -24,8 +24,13 @@ public class ChamadoRepository : IChamadoRepository
 
     public Task<Chamado?> GetByCodigoPublicoComHistoricoAsync(string codigoPublico, CancellationToken cancellationToken = default)
         => _context.Chamados
+            .Include(c => c.Usuario)
+            .Include(c => c.GrupoEmpresa)
+            .Include(c => c.Agente)
             .Include(c => c.Interacoes)
                 .ThenInclude(i => i.Anexos)
+            .Include(c => c.Interacoes)
+                .ThenInclude(i => i.Usuario)
             .FirstOrDefaultAsync(c => c.CodigoPublico == codigoPublico, cancellationToken);
 
     public Task<bool> CodigoPublicoExisteAsync(string codigoPublico, CancellationToken cancellationToken = default)
@@ -38,7 +43,12 @@ public class ChamadoRepository : IChamadoRepository
         FilaChamadosQuery filtro,
         CancellationToken cancellationToken = default)
     {
-        var query = _context.Chamados.AsQueryable();
+        var query = _context.Chamados
+            .AsNoTracking()
+            .Include(c => c.Usuario)
+            .Include(c => c.GrupoEmpresa)
+            .Include(c => c.Agente)
+            .AsQueryable();
 
         if (filtro.Status.HasValue)
         {

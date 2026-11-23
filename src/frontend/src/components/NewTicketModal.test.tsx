@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event';
 import { ThemeProvider } from '@mui/material/styles';
 import i18n from '../i18n';
 import { buildTheme } from '../theme';
-import { ApiError, criarChamado, listarSlaCategorias } from '../api';
+import { ApiError, criarChamado, listarSlaCategorias, type ChamadoDto } from '../api';
 import { NewTicketModal } from './TicketList';
 import type { Session } from '../types';
 
@@ -16,12 +16,14 @@ vi.mock('../api', async (importOriginal) => {
   return { ...original, listarSlaCategorias: vi.fn(), criarChamado: vi.fn() };
 });
 
-const user: Session = { role: 'admin', nome: 'Admin Teste', empresa: null, email: 'admin@atoscapital.com' };
+const user: Session = { usuarioId: 9, grupoEmpresaId: 1, role: 'admin', nome: 'Admin Teste', empresa: null, email: 'admin@atoscapital.com' };
 const OPCOES = [{ produto: 'Portal', categoria: 'Login', prioridade: 'Alta' }];
-const DTO = {
-  id: 1, codigoPublico: 'CH-0001', produto: 'Portal', categoria: 'Login', titulo: 'Problema no login',
+const DTO: ChamadoDto = {
+  id: 1, codigoPublico: 'CH-0001', usuarioId: 9, grupoEmpresaId: 1, agenteId: null,
+  produto: 'Portal', categoria: 'Login', titulo: 'Problema no login',
   descricao: 'Não consigo acessar o sistema.', status: 'Aberto', prioridade: 'Alta',
   slaPrazo: '2026-11-12T10:00:00', criadoEm: '2026-11-11T10:00:00',
+  usuarioNome: 'Admin Teste', grupoEmpresaNome: 'Cliente Teste',
 };
 
 // O teste valida os valores e a submissao, nao digitacao por tecla.

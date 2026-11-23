@@ -8,4 +8,6 @@ public record InteracaoDto(
     TipoInteracao Tipo,
     string Mensagem,
     DateTime CriadoEm,
-    IReadOnlyList<AnexoDto> Anexos);
+    IReadOnlyList<AnexoDto> Anexos,
+    string? UsuarioNome = null,
+    SupportAtos.Domain.Enums.PapelUsuario? PapelUsuario = null);

@@ -84,6 +84,7 @@ const pt = {
     nearSla: 'Próximos do SLA', nearSlaDetail: 'menos de 20% do prazo restante',
     searchPlaceholder: 'Buscar por número, empresa ou categoria', searchAria: 'Buscar chamados',
     refresh: 'Atualizar', filters: 'Filtros', export: 'Exportar',
+    loadError: 'Não foi possível carregar os chamados. Tente novamente.',
     filterStatus: 'Status', allStatus: 'Todos os status', filterProduct: 'Produto', allProducts: 'Todos os produtos',
     openedFrom: 'Aberto a partir de', openedTo: 'Aberto até',
     emptyClientTitle: 'Você ainda não abriu nenhum chamado', emptyTeamTitle: 'Nenhum chamado na fila',
@@ -118,6 +119,10 @@ const pt = {
   detail: {
     openedBy: '{{company}} — aberto por {{contact}} em {{date}}',
     tabConversation: 'Conversa com o cliente', tabNotes: 'Notas internas',
+    loadError: 'Não foi possível carregar o detalhe do chamado.', actionError: 'Não foi possível concluir a ação. Tente novamente.',
+    agentsLoadError: 'Não foi possível carregar a lista de agentes.',
+    closedHint: 'Este chamado está fechado. Reabra o chamado para registrar novas interações.',
+    autoAssign: 'Atribuir automaticamente',
     message: 'Mensagem', replyTeamPlaceholder: 'Responder ao cliente', replyClientPlaceholder: 'Adicionar uma atualização ao chamado',
     send: 'Enviar', note: 'Nota interna', notePlaceholder: 'Nota visível apenas para a equipe de suporte',
     saveNote: 'Salvar nota', noNotes: 'Nenhuma nota interna registrada.',
@@ -129,6 +134,7 @@ const pt = {
       replyTeam: 'Resposta enviada ao cliente.', replyClient: 'Atualização enviada à equipe de suporte.',
       noteSaved: 'Nota interna salva.', statusUpdated: 'Status atualizado para "{{status}}".',
       unassigned: 'Atribuição removida.', taken: 'Você assumiu o chamado.', reassigned: 'Chamado repassado para {{agent}}.',
+      autoAssigned: 'Chamado atribuído automaticamente.',
     },
   },
   reports: {

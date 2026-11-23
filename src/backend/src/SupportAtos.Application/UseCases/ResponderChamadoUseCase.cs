@@ -68,6 +68,6 @@ public class ResponderChamadoUseCase
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         await _webhook.EnviarAsync(WebhookEvent.De(chamado, WebhookEvent.EventoAtualizado), cancellationToken);
 
-        return DtoMapper.ToDto(interacao);
+        return DtoMapper.ToDto(interacao, usuarioAtual.Nome, usuarioAtual.Papel);
     }
 }

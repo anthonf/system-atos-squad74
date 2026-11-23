@@ -19,4 +19,7 @@ public record ChamadoDto(
     DateTime? AguardandoDesde,
     DateTime CriadoEm,
     DateTime? AtualizadoEm,
-    DateTime? FechadoEm);
+    DateTime? FechadoEm,
+    string? UsuarioNome = null,
+    string? GrupoEmpresaNome = null,
+    string? AgenteNome = null);

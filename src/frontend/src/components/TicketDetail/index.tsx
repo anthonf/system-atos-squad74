@@ -1,7 +1,7 @@
-import { useApp, useMessageForm, type MessageFormValues, type TicketDetailProps } from './useApp';
+import { STATUS_OPTIONS, useApp, useMessageForm, type MessageFormValues, type TicketDetailProps } from './useApp';
 // Detalhe do chamado: conversa, notas internas, SLA, ciclo de vida e gestão (assumir / repassar).
-import { ChevronLeft, LockOutlined, Send } from '@mui/icons-material';
-import { Box, Button, MenuItem, Paper, Stack, Step, StepLabel, Stepper, Tab, Tabs, TextField, Typography } from '@mui/material';
+import { AutoAwesome, ChevronLeft, LockOutlined, Send } from '@mui/icons-material';
+import { Alert, Box, Button, MenuItem, Paper, Stack, Step, StepLabel, Stepper, Tab, Tabs, TextField, Typography } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import React from 'react';
@@ -32,26 +32,31 @@ interface MessageFormProps {
   label: string;
   placeholder: string;
   submitLabel: string;
-  onSubmit: (text: string) => void;
+  disabled?: boolean;
+  onSubmit: (text: string) => Promise<void>;
   startIcon?: React.ReactNode;
   buttonColor?: 'primary' | 'inherit';
   buttonSx?: SxProps<Theme>;
 }
 
-function MessageForm({ label, placeholder, submitLabel, onSubmit, startIcon, buttonColor = 'primary', buttonSx }: MessageFormProps) {
-  const { control, handleSubmit, submit } = useMessageForm(onSubmit);
+function MessageForm({ label, placeholder, submitLabel, disabled, onSubmit, startIcon, buttonColor = 'primary', buttonSx }: MessageFormProps) {
+  const { control, handleSubmit, submit, isSubmitting } = useMessageForm(onSubmit);
+  const bloqueado = Boolean(disabled || isSubmitting);
 
   return (
     <Stack component="form" spacing={1.25} onSubmit={handleSubmit(submit)} noValidate>
-      <FormTextField<MessageFormValues> name="text" control={control} required multiline minRows={3} fullWidth label={label} placeholder={placeholder} />
-      <Button type="submit" variant="contained" color={buttonColor} startIcon={startIcon} sx={{ alignSelf: { xs: 'stretch', sm: 'flex-start' }, ...buttonSx }}>{submitLabel}</Button>
+      <FormTextField<MessageFormValues> name="text" control={control} required multiline minRows={3} fullWidth label={label} placeholder={placeholder} disabled={bloqueado} />
+      <Button type="submit" variant="contained" color={buttonColor} disabled={bloqueado} startIcon={startIcon} sx={{ alignSelf: { xs: 'stretch', sm: 'flex-start' }, ...buttonSx }}>{submitLabel}</Button>
     </Stack>
   );
 }
 
 export default function TicketDetail(props: TicketDetailProps) {
   const { ticket, user, onBack } = props;
-  const { atos, t, tab, setTab, isTeam, isMine, team, activeStep, send, addNote, setStatus, assign } = useApp(props);
+  const {
+    atos, t, tab, setTab, busy, fechado, isTeam, isMine, podeGerenciar, podeAssumir, agentes, team,
+    activeStep, send, addNote, setStatus, assumir, repassar, desatribuir, atribuirAutomaticamente,
+  } = useApp(props);
 
   return (
     <Box sx={{ maxWidth: 1152 }}>
@@ -69,6 +74,8 @@ export default function TicketDetail(props: TicketDetailProps) {
         {t('detail.openedBy', { company: ticket.empresa, contact: ticket.contato, date: formatDateTime(ticket.abertura) })}
       </Typography>
 
+      {fechado && <Alert severity="info" sx={{ mb: 2 }}>{t('detail.closedHint')}</Alert>}
+
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' }, gap: 4 }}>
         <Box>
           {isTeam && (
@@ -84,7 +91,7 @@ export default function TicketDetail(props: TicketDetailProps) {
                 {ticket.mensagens.map((m, i) => <Message key={i} {...m} tint={m.tipo === 'agente'} />)}
               </Stack>
               <MessageForm label={t('detail.message')} placeholder={isTeam ? t('detail.replyTeamPlaceholder') : t('detail.replyClientPlaceholder')}
-                submitLabel={t('detail.send')} startIcon={<Send fontSize="small" />} onSubmit={send} />
+                submitLabel={t('detail.send')} disabled={fechado || busy} startIcon={<Send fontSize="small" />} onSubmit={send} />
             </Box>
           ) : (
             <Box role="tabpanel" id="panel-notas" aria-labelledby="tab-notas">
@@ -97,7 +104,7 @@ export default function TicketDetail(props: TicketDetailProps) {
                 ) : ticket.notas.map((n, i) => <Message key={i} {...n} tint note />)}
               </Stack>
               <MessageForm label={t('detail.note')} placeholder={t('detail.notePlaceholder')} submitLabel={t('detail.saveNote')}
-                onSubmit={addNote} buttonColor="inherit"
+                disabled={fechado || busy} onSubmit={addNote} buttonColor="inherit"
                 buttonSx={{ bgcolor: 'text.primary', color: 'background.paper', '&:hover': { bgcolor: 'text.secondary' } }} />
             </Box>
           )}
@@ -137,15 +144,25 @@ export default function TicketDetail(props: TicketDetailProps) {
                 {isMine && <Box component="span" sx={{ color: 'success.main' }}> {t('detail.you')}</Box>}
               </Typography>
 
-              {!isMine && <Button fullWidth variant="contained" onClick={() => assign(user.nome)} sx={{ mb: 2 }}>{t('detail.take')}</Button>}
+              {podeAssumir && <Button fullWidth variant="contained" onClick={() => void assumir()} disabled={busy} sx={{ mb: 1 }}>{t('detail.take')}</Button>}
+              {podeGerenciar && !ticket.agenteId && !fechado && (
+                <Button fullWidth variant="outlined" startIcon={<AutoAwesome />} onClick={() => void atribuirAutomaticamente()} disabled={busy || agentes.length === 0} sx={{ mb: 2 }}>
+                  {t('detail.autoAssign')}
+                </Button>
+              )}
 
               <Stack spacing={2}>
-                <TextField select size="small" fullWidth label={t('detail.reassign')} value="" onChange={(e) => assign(e.target.value === '__none__' ? null : e.target.value)}>
-                  {team.map((a) => <MenuItem key={a} value={a}>{a}</MenuItem>)}
-                  {ticket.agente && <MenuItem value="__none__">{t('detail.leaveUnassigned')}</MenuItem>}
-                </TextField>
-                <TextField select size="small" fullWidth label={t('detail.status')} value={ticket.status} onChange={(e) => setStatus(e.target.value as StatusKey)}>
-                  {STAGES.map((k) => <MenuItem key={k} value={k}>{t(`status.${k}`)}</MenuItem>)}
+                {podeGerenciar && !fechado && (
+                  <TextField select size="small" fullWidth label={t('detail.reassign')} value="" onChange={(e) => {
+                    if (e.target.value === '__none__') void desatribuir();
+                    else void repassar(Number(e.target.value));
+                  }} disabled={busy || team.length === 0}>
+                    {team.map((a) => <MenuItem key={a.id} value={a.id}>{a.nome}</MenuItem>)}
+                    {ticket.agenteId && <MenuItem value="__none__">{t('detail.leaveUnassigned')}</MenuItem>}
+                  </TextField>
+                )}
+                <TextField select size="small" fullWidth label={t('detail.status')} value={ticket.status} onChange={(e) => void setStatus(e.target.value as StatusKey)} disabled={!isTeam || fechado || busy}>
+                  {STATUS_OPTIONS.map((k) => <MenuItem key={k} value={k}>{t(`status.${k}`)}</MenuItem>)}
                 </TextField>
               </Stack>
             </Paper>

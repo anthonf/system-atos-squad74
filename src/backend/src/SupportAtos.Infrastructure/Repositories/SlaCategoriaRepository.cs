@@ -19,4 +19,12 @@ public class SlaCategoriaRepository : ISlaCategoriaRepository
             .Where(s => s.Produto == produto && s.Categoria == categoria)
             .OrderByDescending(s => s.Prioridade)
             .FirstOrDefaultAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<SlaCategoria>> ListarAtivasAsync(CancellationToken cancellationToken = default)
+        => await _context.SlaCategorias
+            .AsNoTracking()
+            .Where(s => s.Ativo)
+            .OrderBy(s => s.Produto)
+            .ThenBy(s => s.Categoria)
+            .ToListAsync(cancellationToken);
 }

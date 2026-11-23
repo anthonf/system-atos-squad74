@@ -139,6 +139,9 @@ public class FakeSlaCategoriaRepository : ISlaCategoriaRepository
 
     public Task<SlaCategoria?> GetByProdutoECategoriaAsync(string produto, string categoria, CancellationToken cancellationToken = default)
         => Task.FromResult(_slas.FirstOrDefault(s => s.Produto == produto && s.Categoria == categoria));
+
+    public Task<IReadOnlyList<SlaCategoria>> ListarAtivasAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<SlaCategoria>>(_slas.Where(s => s.Ativo).ToList());
 }
 
 public class FakeChamadoRepository : IChamadoRepository

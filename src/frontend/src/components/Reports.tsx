@@ -6,7 +6,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslation } from 'react-i18next';
 import { AccessTime, CheckCircleOutline, ConfirmationNumberOutlined } from '@mui/icons-material';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { CATEGORIES, EMPRESAS, PRODUCTS } from '../data';
 import { Eyebrow, isAtRisk, StatTile, visuallyHidden } from './ui';
 import { FONT, MONO } from '../tokens';
 import type { Role, Session, Ticket } from '../types';
@@ -22,9 +21,12 @@ export default function Reports({ tickets, role, user }: ReportsProps) {
   const { t: tr } = useTranslation();
   const [empresa, setEmpresa] = useState(role === 'cliente' ? user.empresa : 'todas');
   const scoped = useMemo(() => tickets.filter((t) => empresa === 'todas' || t.empresa === empresa), [tickets, empresa]);
+  const produtos = useMemo(() => [...new Set(tickets.map((t) => t.produto))].sort(), [tickets]);
+  const categorias = useMemo(() => [...new Set(tickets.map((t) => t.categoria))].sort(), [tickets]);
+  const grupos = useMemo(() => [...new Set(tickets.map((t) => t.empresa))].sort(), [tickets]);
 
-  const porProduto = PRODUCTS.map((p) => ({ nome: p, total: scoped.filter((t) => t.produto === p).length }));
-  const porCategoria = CATEGORIES.map((c) => ({ nome: c, total: scoped.filter((t) => t.categoria === c).length })).sort((a, b) => b.total - a.total);
+  const porProduto = produtos.map((p) => ({ nome: p, total: scoped.filter((t) => t.produto === p).length }));
+  const porCategoria = categorias.map((c) => ({ nome: c, total: scoped.filter((t) => t.categoria === c).length })).sort((a, b) => b.total - a.total);
   const resolvidos = scoped.filter((t) => ['resolvido', 'fechado'].includes(t.status)).length;
   const emRisco = scoped.filter(isAtRisk);
   const tick = { fontSize: 12, fontFamily: FONT, fill: atos.textSecondary };
@@ -41,7 +43,7 @@ export default function Reports({ tickets, role, user }: ReportsProps) {
       {role !== 'cliente' && (
         <TextField select size="small" label={tr('reports.group')} value={empresa} onChange={(e) => setEmpresa(e.target.value)} sx={{ minWidth: { sm: 240 }, width: { xs: '100%', sm: 'auto' }, mb: 2.5 }}>
           <MenuItem value="todas">{tr('reports.allGroups')}</MenuItem>
-          {EMPRESAS.map((e) => <MenuItem key={e} value={e}>{e}</MenuItem>)}
+          {grupos.map((e) => <MenuItem key={e} value={e}>{e}</MenuItem>)}
         </TextField>
       )}
 
